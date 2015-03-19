@@ -18,3 +18,9 @@ function updateAuthorisationRestriction(username,restrictionName,level)
     }
     return false;
 }
+function addAuthorisationRestriction(username,restrictionName,level)
+{
+    if(!isAuthorized(username,"addAuthorisationRestriction"))
+        throw "NotAuthorizedExeption";
+    return updateAuthorisationRestriction(username,restrictionName,level);
+}
