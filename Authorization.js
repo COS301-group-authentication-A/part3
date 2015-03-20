@@ -27,6 +27,12 @@ function addAuthorisationRestriction(username,restrictionName,level)
     return updateAuthorisationRestriction(username,restrictionName,level);
 }
 
+function removeAuthorizationRequest(username, restrictionName, level){
+	if(!isAuthorized(username,"removeAuthorisationRestriction"))
+        	throw "NotAuthorizedExeption";
+	return updateAuthorisationRestriction(username,restrictionName,0);
+}
+
 function getAuthorizationRestriction(restriction)//my function is supposed to return the restriction that can be updated. i.e if user is restricted to post, then i return this authority (postRestriction)so it can be updated. [Shaun]
 {
     var currRestriction;
