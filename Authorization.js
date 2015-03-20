@@ -20,12 +20,17 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthorizat
 
 var AuthorizationRestriction=function()//used by everyone
 {
+    var SRestriction=new ServiceRestriction();
 };
 var ServiceRestriction=function()//used by everyone
 {
+    var minimumStatusPoints;
+    var SIdentifier=new ServiceIdentifier();
 };
 var ServiceIdentifier=function()//used by everyone
 {
+    var fullyQualifiedInterfaceName;
+    var methodName;
 };
 
     function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
