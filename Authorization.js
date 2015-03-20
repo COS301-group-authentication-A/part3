@@ -17,4 +17,15 @@ var Authorization=fyunction()
         UpdateAuthorizationRestriction.isUpdated = false;
         return UpdateAuthorizationRestriction;
     }
+
+    function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
+    {
+        var addAuthorizationRestriction;
+        if (!isAuthorized(userId, "addAuthorisationRestriction"))
+        {
+            throw "NotAuthorizedExeption";
+        }
+        addAuthorizationRestriction.isAdded = updateAuthorisationRestriction(userId, "addAuthorisationRestriction").isUpdated;
+        return addAuthorizationRestriction;
+    }
 }
