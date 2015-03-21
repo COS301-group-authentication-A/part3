@@ -4,7 +4,7 @@
  */
 
 /*
- * Dummy getStatusForProfile 
+ * Dummy getStatusForProfile has to be removed when intergrating
  */
 function getStatusForProfile(getAuthoizationsRestrictionRequest)
 {
@@ -17,7 +17,14 @@ function getStatusForProfile(getAuthoizationsRestrictionRequest)
 	return toreturn;
 }
     
-function isAuthorized(getAuthoizationsRestrictionRequest)
+//class isAuthorizedResult 
+isAuthorizedResult = function()
+{
+  
+};
+
+    
+isAuthorizedResult.prototype.isAuthorized = function(getAuthoizationsRestrictionRequest)
 {
 // 	  var getAuthoizationsRestrictionRequest = "u12121950";
 	  var statusProfileResults;
