@@ -1,12 +1,7 @@
 //var csds = require('./csds');
 //var connect = require('./connect');
 var Authorization;
-////////////////////////////test////////////////////////////////////
-//var testUpdateAuth=new UpdateAuthorizationRestrictionRequest;
-//testUpdateAuth.setUserID("u12118282");
-//testUpdateAuth.setAuthorizationRestriction();
-//Authorization.updateAuthorisationRestriction(null);
-/////////////////////////test end//////////////////////////////////
+
 Authorization = function () {//Authorization class
 
 };
@@ -21,18 +16,13 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
 //    }
 //    else
 //    {
-        // Retrieve
-        var MongoClient = require('mongodb').MongoClient;
+    var mongoose = require('mongoose');
+    mongoose.connect('mongodb://localhost/authentication');
 
-        // Connect to the db
-        MongoClient.connect("mongodb://localhost:27017/authorization", function(err, db) {
-            if(!err) {
-                console.log("We are connected");
-            }
-        });
-
+    
 //    }
 };
+
 var UpdateAuthorizationRestrictionRequest;
 UpdateAuthorizationRestrictionRequest=function()
 {
@@ -73,7 +63,13 @@ ServiceRestriction.prototype.setServiceRestriction=function(minimumStatusPoints,
 {
     this.minimumStatusPoints=minimumStatusPoints;
     this.SIdentifier=SIdentifier;
-}
+};
+ServiceRestriction.prototype.getServiceRestrictionMinimumStatusPoints=function() {
+    return this.minimumStatusPoints;
+};
+ServiceRestriction.prototype.getServiceRestrictionServiceIdentifier=function() {
+    return this.SIdentifier;
+};
 var ServiceIdentifier=function()//used by everyone
 {
     var fullyQualifiedInterfaceName;
@@ -83,8 +79,11 @@ ServiceIdentifier.prototype.setServiceIdentifier=function(fullyQualifiedInterfac
 {
     this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
     this.methodName=methodName;
-}
-
+};
+ServiceIdentifier.prototype.getServiceIdentifierMethodName=function()
+{
+    return this.methodName;
+};
     function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
     {
         var addAuthorizationRestriction;
@@ -118,3 +117,17 @@ function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
 
     return authorizationRestriction;
 }
+////////////////////////////test////////////////////////////////////
+//testUpdateAuth.setAuthorizationRestriction();
+var authorization=new Authorization
+var authorizationRestriction=new AuthorizationRestriction;
+var testUpdateAuth=new UpdateAuthorizationRestrictionRequest;
+var sIdentifier=new ServiceIdentifier;
+var sratriction=new ServiceRestriction;
+sIdentifier.setServiceIdentifier("Threads","updateAuthorisationRestriction");
+sratriction.setServiceRestriction(5,sIdentifier);
+testUpdateAuth.setUserID("u12118282");
+testUpdateAuth.setAuthorizationRestriction();
+
+authorization.updateAuthorisationRestriction(testUpdateAuth);
+/////////////////////////test end//////////////////////////////////
