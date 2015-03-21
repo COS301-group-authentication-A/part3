@@ -1,23 +1,65 @@
+//var csds = require('./csds');
+//var connect = require('./connect');
 var Authorization;
+////////////////////////////test////////////////////////////////////
+//var testUpdateAuth=new UpdateAuthorizationRestrictionRequest;
+//testUpdateAuth.setUserID("u12118282");
+//testUpdateAuth.setAuthorizationRestriction();
+//Authorization.updateAuthorisationRestriction(null);
+/////////////////////////test end//////////////////////////////////
 Authorization = function () {//Authorization class
 
 };
-Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthorizationRestrictionRequest)//The  updateAuthorisationRestriction function
+Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
-    if (!isAuthorized(updateAuthorisationRestrictionRequest.getuserID(), "updateAuthorisationRestriction"))
-        throw NotAuthorizedExeption;
-    for (var i = 0; i < servicePointsSize; i++) {
-        if (updateAuthorizationRestrictionRequest.get == servicePoints.sevice[i]) {
-            servicePoints.points[i] = level;
-            UpdateAuthorizationRestriction.isUpdated = true;
-            return UpdateAuthorizationRestriction;
-        }
-    }
+//    var isAuthreq=new IsAuthorisedRequest();
+//    isAuthreq.setUserID(UpdateAuthReq.getUserID());
+//    isAuthreq.getServiceIdentifier().setInterfaceName("Authorization");
+//    isAuthreq.getServiceIdentifier().setMethodName("updateAuthorizationRestriction");
+//    if (!isAuthorized(UpdateAuthReq.getUserID())){
+//        throw NotAuthorizeddExeption;
+//    }
+//    else
+//    {
+        // Retrieve
+        var MongoClient = require('mongodb').MongoClient;
 
-    UpdateAuthorizationRestriction.isUpdated = false;
-    return UpdateAuthorizationRestriction;
+        // Connect to the db
+        MongoClient.connect("mongodb://localhost:27017/authorization", function(err, db) {
+            if(!err) {
+                console.log("We are connected");
+            }
+        });
+
+//    }
 };
-
+var UpdateAuthorizationRestrictionRequest;
+UpdateAuthorizationRestrictionRequest=function()
+{
+    var userID;
+    this.userID = null;
+    var AuthorizationRestriction;
+};
+UpdateAuthorizationRestrictionRequest.prototype.getUserID=function()
+{
+    return this.userID;
+};
+UpdateAuthorizationRestrictionRequest.prototype.setUserID=function(userID)
+{
+    this.userID=userID;
+};
+UpdateAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(AuthorizationRestriction)
+{
+    this.AuthorizationRestriction=AuthorizationRestriction;
+};
+UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
+};
+var UpdateAuthorizationRestrictionsResult=function()
+{
+    var  AuthorizationRestriction;
+};
 var AuthorizationRestriction=function()//used by everyone
 {
     var SRestriction=new ServiceRestriction();
@@ -25,13 +67,23 @@ var AuthorizationRestriction=function()//used by everyone
 var ServiceRestriction=function()//used by everyone
 {
     var minimumStatusPoints;
-    var SIdentifier=new ServiceIdentifier();
+    var SIdentifier;
 };
+ServiceRestriction.prototype.setServiceRestriction=function(minimumStatusPoints,SIdentifier)
+{
+    this.minimumStatusPoints=minimumStatusPoints;
+    this.SIdentifier=SIdentifier;
+}
 var ServiceIdentifier=function()//used by everyone
 {
     var fullyQualifiedInterfaceName;
     var methodName;
 };
+ServiceIdentifier.prototype.setServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)
+{
+    this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
+    this.methodName=methodName;
+}
 
     function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
     {
