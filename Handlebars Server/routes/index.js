@@ -16,9 +16,9 @@ router.get('/', function(req, res, next) {
  
 
 //Eg use get arguments from URL
-router.get('/user', function(req, res, next) {
+router.get('/testing', function(req, res, next) {
 //Pass to page
-  res.render('index', getProfile(req.query.id));
+  res.render('test', getProfile(req.query.id));
 });
 
 
