@@ -16,28 +16,43 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
 //    }
 //    else
 //    {
-    var mongoose = require('mongoose');
-    var spacesSchema = mongoose.Schema({
-        _id: { type: String, required: true, unique: true },
-        Ranking: { type: String, required: true }
-    });
-    mongoose.connect('mongodb://localhost/authorization');
-    var Space = mongoose.model('Authentication', spacesSchema);
-    Space.findById(((UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction()).getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()), function(err, user) {
-        if (err) throw err;
-
-        // change the users location
-        Space.ranking = UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
-
-        // save the user
-        Space.save(function(err) {
-            if (err) throw err;
-
-            console.log('User successfully updated!');
-        });
-
-    });
+    //    var isAuthreq=new IsAuthorisedRequest();
+//    isAuthreq.setUserID(UpdateAuthReq.getUserID());
+//    isAuthreq.getServiceIdentifier().setInterfaceName("Authorization");
+//    isAuthreq.getServiceIdentifier().setMethodName("updateAuthorizationRestriction");
+//    if (!isAuthorized(isAuthreq)){
+//        throw NotAuthorizeddExeption;
 //    }
+//    else
+//    {
+    var Db = require('mongodb').Db,
+        MongoClient = require('mongodb').MongoClient,
+        Server = require('mongodb').Server,
+        assert = require('assert');
+
+
+    var db = new Db('authorization', new Server('localhost', 27017));
+// Establish connection to db
+    db.open(function(err, db) {
+        // Get a collection
+        db.collection('Authentication', function (err, collection) {
+
+            // Update the document with an atomic operator
+            collection.update({_id: UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()}, {$set: {Ranking: UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()}});
+
+            // Wait for a second then fetch the document
+            setTimeout(function () {
+
+                // Fetch the document that we modified
+                collection.findOne({_id: (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName())}, function (err, item) {
+                    assert.equal(null, err);
+                    assert.equal(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName(), item._id);
+                    assert.equal(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints(), item.Ranking);
+                    db.close();
+                });
+            }, 1000);
+        })
+    });
 };
 
 
@@ -122,9 +137,9 @@ var RemoveAuthorizationRestrictionsResult=function()
 
 Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
-    if(isAuthorized(RemoveAuthorizationReq)){
-        RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-    }
+   // if(isAuthorized(RemoveAuthorizationReq)){
+   //     RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+   // }
 };
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 var RemoveAuthorizationRestrictionsResult;
@@ -201,7 +216,6 @@ ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumS
 {
     this.minimumStatusPoints=minimumStatusPoints;
 };
-};
 ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
 {
     this.minimumStatusPoints=minimumStatusPoints;
@@ -247,10 +261,10 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
     function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
     {
         var addAuthorizationRestriction;
-        if (!isAuthorized(userId, "addAuthorisationRestriction"))
-        {
-            throw "NotAuthorizedExeption";
-        }
+     //   if (!isAuthorized(userId, "addAuthorisationRestriction"))
+       // {
+         //   throw "NotAuthorizedExeption";
+        //}
         addAuthorizationRestriction.isAdded = updateAuthorisationRestriction(userId, "addAuthorisationRestriction").isUpdated;
         return addAuthorizationRestriction;
     }
@@ -263,8 +277,8 @@ function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
     return authorizationRestriction;
 }
 ////////////////////////////test////////////////////////////////////
-var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
+var serviceRestriction=new ServiceRestriction(2,sIdentifier);
 var authRestriction=new AuthorizationRestriction(serviceRestriction);
 var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
 var auth=new Authorization;
@@ -272,7 +286,7 @@ auth.updateAuthorisationRestriction(updateAuth);
 /////////////////////////test end//////////////////////////////////
 
 ////////////////////////////test remove////////////////////////////////////
-var rSIdentifier =new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
+var rSIdentifier =new ServiceIdentifier("Authorization","removeAuthorisationRestriction");
 var rServiceRestriction =new ServiceRestriction(5,rSIdentifier);
 var rAuthRestriction;
 rAuthRestriction = new AuthorizationRestriction(rServiceRestriction);
