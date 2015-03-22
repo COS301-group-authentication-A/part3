@@ -269,13 +269,6 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
         return addAuthorizationRestriction;
     }
 
-function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
-{
-    var authorizationRestriction;
-    authorizationRestriction.name = db.tableName.find({name:getAuthoizationsRestrictionRequest});
-
-    return authorizationRestriction;
-}
 ////////////////////////////test////////////////////////////////////
 var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
 var serviceRestriction=new ServiceRestriction(2,sIdentifier);
@@ -296,3 +289,32 @@ var rAuth;
 rAuth = new Authorization;
 rAuth.removeAuthorisationRestriction(removeAuth);
 /////////////////////////test remove end//////////////////////////////////
+
+//**************************getAuthorizationRestriction***************************//
+Authorization.prototype.getAuthorizationRestriction = function(getAuthReq)
+{
+    var getAuthorizationRequestResult;//this holds the returned (cursor) object which is going to be decoded to get the rest of the information.
+
+    var Db = require('mongodb').Db,
+    MongoClient = require('mongodb').MongoClient,
+    Server = require('mongodb').Server,
+    assert = require('assert');
+
+    var db = new Db('authorization', new Server('localhost', 27017));
+    // Establish connection to db
+    db.open(function(err, db)
+    {
+        // Get a collection
+        db.collection('Authentication', function (err, collection)
+        {
+            // Fetch the requested restriction object according to the request.
+            getAuthorizationRequestResult = collection.find(
+                                            {
+                                                "serviceName" : getAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()
+                                            })
+        })
+    })
+
+    return getAuthorizationRequestResult;
+}
+//***********************************end************************************//
