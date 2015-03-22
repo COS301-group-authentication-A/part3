@@ -23,11 +23,11 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     });
     mongoose.connect('mongodb://localhost/authorization');
     var Space = mongoose.model('Authentication', spacesSchema)
-    Space.findById(((UpdateAuthReq.getAuthorizationRestriction()).getARServiceRestriction()).getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName(), function(err, user) {
+    Space.findById(((UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction()).getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()), function(err, user) {
         if (err) throw err;
 
         // change the users location
-        Space.ranking = UpdateAuthReq.getAuthorizationRestriction().getARServiceRestriction().getServiceRestrictionMinimumStatusPoints();
+        Space.ranking = UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
 
         // save the user
         Space.save(function(err) {
@@ -39,13 +39,14 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     });
 //    }
 };
-
+///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
-UpdateAuthorizationRestrictionRequest=function()
+UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
 {
     var userID;
-    this.userID = null;
+    this.userID = userID;
     var AuthorizationRestriction;
+    this.AuthorizationRestriction=AuthorizationRestriction;
 };
 UpdateAuthorizationRestrictionRequest.prototype.getUserID=function()
 {
@@ -63,52 +64,78 @@ UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 {
     return this.AuthorizationRestriction;
 };
+//////////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////////
+///////////////////////////////Update Authorisation restriction result class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionsResult=function()
 {
     var  AuthorizationRestriction;
 };
-var AuthorizationRestriction=function()//used by everyone
+///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
+///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
+var AuthorizationRestriction=function(serviceRestriction)//used by everyone
 {
-    var SRestriction=new ServiceRestriction();
+    var ServiceRestriction;
+    this.ServiceRestriction=serviceRestriction;
 };
 AuthorizationRestriction.prototype.setServiceRestriction=function(ServiceRestriction)
 {
-    this.SRestriction=ServiceRestriction;
+    this.ServiceRestriction=ServiceRestriction;
 };
-AuthorizationRestriction.prototype.getARServiceRestriction=function()
+AuthorizationRestriction.prototype.getServiceRestriction=function()
 {
-    return this.SRestriction;
+    return this.ServiceRestriction;
 };
-var ServiceRestriction=function()//used by everyone
+///////////////////////////////End of Authorisation restriction class and functions///////////////////////////////////////////////////
+///////////////////////////////Service restriction class and functions///////////////////////////////////////////////////
+var ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by everyone
 {
     var minimumStatusPoints;
-    var SIdentifier;
+    this.minimumStatusPoints=minimumStatusPoints;
+    var ServiceIdentifier;
+    this.ServiceIdentifier=serviceIdentifier;
 };
-ServiceRestriction.prototype.setServiceRestriction=function(minimumStatusPoints,SIdentifier)
+ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
 {
     this.minimumStatusPoints=minimumStatusPoints;
-    this.SIdentifier=SIdentifier;
 };
+
+ServiceRestriction.prototype.setServiceRestrictionServiceIdentifier=function(serviceIdentifier)
+{
+    this.ServiceIdentifier=serviceIdentifier;
+};
+
 ServiceRestriction.prototype.getServiceRestrictionMinimumStatusPoints=function() {
     return this.minimumStatusPoints;
 };
 ServiceRestriction.prototype.getServiceRestrictionServiceIdentifier=function() {
-    return this.SIdentifier;
+    return this.ServiceIdentifier;
 };
-var ServiceIdentifier=function()//used by everyone
+///////////////////////////////End of Service restriction class and functions///////////////////////////////////////////////////
+///////////////////////////////Service Identifier class and functions///////////////////////////////////////////////////
+var ServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)//used by everyone
 {
     var fullyQualifiedInterfaceName;
     var methodName;
-};
-ServiceIdentifier.prototype.setServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)
-{
     this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
     this.methodName=methodName;
+};
+ServiceIdentifier.prototype.setServiceIdentifierMethodName=function(methodName)
+{
+    this.methodName=methodName;
+};
+ServiceIdentifier.prototype.setServiceIdentifierInterfaceName=function(fullyQualifiedInterfaceName)
+{
+    this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
 };
 ServiceIdentifier.prototype.getServiceIdentifierMethodName=function()
 {
     return this.methodName;
 };
+ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
+{
+    return this.fullyQualifiedInterfaceName;
+};
+///////////////////////////////End of Service Identifier class and functions//////////////////////////////////////////////////
     function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
     {
         var addAuthorizationRestriction;
@@ -143,17 +170,10 @@ function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
     return authorizationRestriction;
 }
 ////////////////////////////test////////////////////////////////////
-//testUpdateAuth.setAuthorizationRestriction();
-var authorization=new Authorization
-var authorizationRestriction=new AuthorizationRestriction;
-var testUpdateAuth=new UpdateAuthorizationRestrictionRequest;
-var sIdentifier=new ServiceIdentifier;
-var sRastriction=new ServiceRestriction;
-sIdentifier.setServiceIdentifier("Threads","updateAuthorisationRestriction");
-sRastriction.setServiceRestriction(5,sIdentifier);
-authorizationRestriction.setServiceRestriction(sRastriction);
-testUpdateAuth.setUserID("u12118282");
-testUpdateAuth.setAuthorizationRestriction(authorizationRestriction);
-
-authorization.updateAuthorisationRestriction(testUpdateAuth);
+var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+var authRestriction=new AuthorizationRestriction(serviceRestriction);
+var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
+var auth=new Authorization;
+auth.updateAuthorisationRestriction(updateAuth);
 /////////////////////////test end//////////////////////////////////
