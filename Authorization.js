@@ -147,20 +147,6 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
         return addAuthorizationRestriction;
     }
 
-///////////////optionA(no parameter)
-    function getAuthorizationRestrictions()
-    {
-        var authorizationRestriction;
-
-        var objArray = db.tableName.find();
-
-        for(var i=0;i<objArray.size;i++)
-        {
-            authorizationRestriction[i] = objArray.Array[i].Object.name;
-        }
-        return authorizationRestriction;
-    }
-///////////////optionB(with parameter)
 function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
 {
     var authorizationRestriction;
