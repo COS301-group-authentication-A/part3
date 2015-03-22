@@ -16,7 +16,6 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
 //    }
 //    else
 //    {
-
     var mongoose = require('mongoose');
     var spacesSchema = mongoose.Schema({
         _id: { type: String, required: true, unique: true },
@@ -76,15 +75,56 @@ var UpdateAuthorizationRestrictionsResult=function()
 ///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 
 
+///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
+var UpdateAuthorizationRestrictionRequest;
+UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
+{
+    var userID;
+    this.userID = userID;
+    var AuthorizationRestriction;
+    this.AuthorizationRestriction=AuthorizationRestriction;
+};
+UpdateAuthorizationRestrictionRequest.prototype.getUserID=function()
+{
+    return this.userID;
+};
+UpdateAuthorizationRestrictionRequest.prototype.setUserID=function(userID)
+{
+    this.userID=userID;
+};
+UpdateAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(AuthorizationRestriction)
+{
+    this.AuthorizationRestriction=AuthorizationRestriction;
+};
+UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
+};
+//////////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////////
+///////////////////////////////Update Authorisation restriction result class and functions///////////////////////////////////////////////////
+var UpdateAuthorizationRestrictionsResult=function()
+{
+    var  AuthorizationRestriction;
+};
+///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 
 
 
+
+
+///////////////////////////////RemoveAuthorisationRestrictionResult class and functions///////////////////////////////////////////////////
+var RemoveAuthorizationRestrictionsResult=function()
+{
+    var  AuthorizationRestriction;
+};
+///////////////////////////////End of RemoveAuthorisationRestrictionResult///////////////////////////////////////////////////
 
 
 Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
-    RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-    return true;
+    if(isAuthorized(RemoveAuthorizationReq)){
+        RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+    }
 };
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 var RemoveAuthorizationRestrictionsResult;
@@ -125,11 +165,6 @@ RemoveAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 
 
 
-
-
-
-
-
 ///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
 var AuthorizationRestriction=function(serviceRestriction)//used by everyone
 {
@@ -137,6 +172,15 @@ var AuthorizationRestriction=function(serviceRestriction)//used by everyone
     this.ServiceRestriction=serviceRestriction;
 };
 AuthorizationRestriction.prototype.setServiceRestriction=function(ServiceRestriction)
+
+{
+    this.ServiceRestriction=ServiceRestriction;
+};
+AuthorizationRestriction.prototype.getServiceRestriction=function()
+{
+    return this.ServiceRestriction;
+};
+
 {
     this.ServiceRestriction=ServiceRestriction;
 };
@@ -152,6 +196,11 @@ var ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by 
     this.minimumStatusPoints=minimumStatusPoints;
     var ServiceIdentifier;
     this.ServiceIdentifier=serviceIdentifier;
+};
+ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
+{
+    this.minimumStatusPoints=minimumStatusPoints;
+};
 };
 ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
 {
@@ -209,7 +258,6 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 function getAuthorizationRestrictions(getAuthoizationsRestrictionRequest)
 {
     var authorizationRestriction;
-
     authorizationRestriction.name = db.tableName.find({name:getAuthoizationsRestrictionRequest});
 
     return authorizationRestriction;
