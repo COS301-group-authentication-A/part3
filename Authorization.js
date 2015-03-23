@@ -183,8 +183,42 @@ RemoveAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 
 ///////////////////////////////End of RemoveAuthorisationRestriction request class and functions///////////////////////////////////////////////
 
+//////////////////////////////AddAuthorizationRestrictionRequest class and functions////////////////////////////////////
 
+var AddAuthorizationRestrictionRequest;
+AddAuthorizationRestrictionRequest = function()
+{
+    var AuthorizationRestriction;
+    this.AuthorizationRestriction=_AuthorizationRestriction;
+}
 
+AddAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(_AuthorizationRestriction)
+{
+    this.AuthorizationRestriction=_AuthorizationRestriction;
+};
+AddAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
+};
+//////////////////////////////End of AddAuthorizationRestrictionRequest class and functions/////////////////////////////
+//////////////////////////////AddAuthorisationRestriction class and functions///////////////////////////////////////////
+Authorization.prototype.addAuthorisationRestriction=function(AddAuthorizationReq)
+{
+    var isAuthResult = new IsAuthorisedResult();
+    if(isAuthResult(AddAuthorizationReq)){
+        var auth = new Authorization;
+        auth.updateAuthorisationRestriction(AddAuthorizationReq);
+    }
+    return new AddAuthorizationRestrictionsResult();
+};
+///////////////////////////////End of AddAuthorisationRestriction class and functions///////////////////////////////////
+///////////////////////////////AddAuthorisationRestrictionResult class and functions////////////////////////////////////
+var AddAuthorizationRestrictionsResult;
+AddAuthorizationRestrictionsResult = function ()
+{
+    var AuthorizationRestriction;
+};
+//////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////
 
 ///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
 var AuthorizationRestriction=function(serviceRestriction)//used by everyone
@@ -264,16 +298,6 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
     return this.fullyQualifiedInterfaceName;
 };
 ///////////////////////////////End of Service Identifier class and functions//////////////////////////////////////////////////
-    function addAuthorizationRestriction(AddAuthorizationRestrictionRequest)
-    {
-        var addAuthorizationRestriction;
-     //   if (!isAuthorized(userId, "addAuthorisationRestriction"))
-       // {
-         //   throw "NotAuthorizedExeption";
-        //}
-        addAuthorizationRestriction.isAdded = updateAuthorisationRestriction(userId, "addAuthorisationRestriction").isUpdated;
-        return addAuthorizationRestriction;
-    }
 
 ////////////////////////////test////////////////////////////////////
 var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
@@ -283,6 +307,15 @@ var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestric
 var auth=new Authorization;
 auth.updateAuthorisationRestriction(updateAuth);
 /////////////////////////test end//////////////////////////////////
+
+////////////////////////////test add////////////////////////////////////
+var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
+var serviceRestriction=new ServiceRestriction(4,sIdentifier);
+var authRestriction=new AuthorizationRestriction(serviceRestriction);
+var addAuth=new AddAuthorizationRestrictionRequest("u13397134",authRestriction);
+var auth=new Authorization;
+auth.addAuthorisationRestriction(addAuth);
+/////////////////////////test add end//////////////////////////////////
 
 ////////////////////////////test remove////////////////////////////////////
 var rSIdentifier =new ServiceIdentifier("Authorization","removeAuthorisationRestriction");
