@@ -137,9 +137,15 @@ var RemoveAuthorizationRestrictionsResult=function()
 
 Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
-   // if(isAuthorized(RemoveAuthorizationReq)){
-   //     RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-   // }
+    //var isAuthRequest=new IsAuthorisedRequest();
+    var isAuthResult=new IsAuthorisedResult();
+    if(isAuthResult(RemoveAuthorizationReq)){
+        RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+        var uRestriction = new Authorization();
+        uRestriction.updateAuthorisationRestriction(RemoveAuthorizationReq);
+    }
+    return new RemoveAuthorizationRestrictionsResult();
+   // the spec says that there is no need to return anything for remove
 };
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 var RemoveAuthorizationRestrictionsResult;

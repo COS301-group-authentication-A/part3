@@ -77,5 +77,5 @@ isAuthorizedResult.prototype.isAuthorized = function(getAuthoizationsRestriction
 	  }
 	  
 	  
-    return boolresults;
+    return boolisAuthorized;
 }
