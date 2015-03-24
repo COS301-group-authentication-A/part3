@@ -371,29 +371,28 @@ buzzAuthorization = function(){
 
 
 /*
- * ServiceIdentifier inherits from buzzAuthorization
- * It has two virables:
- * 	- fullyQualifiedInterfaceName:String
- * 	- methodName: String
- */
-
-buzzAuthorization.prototype.ServiceIdentifier = function()
-{
-  var fullyQualifiedInterfaceName; 
-  var methodName;
-};
-
-/*
  * isAuthorizedRequest inherits from buzzAuthorization has one virable and two objects:
  * 	- userid: virable
  *	- serviceIdentifierOject: ServiceIdentifier
  *	- contextInfo: Map from generic 
  */
-buzzAuthorization.prototype.isAuthorizedRequest = function()
+var isAuthorizedRequest = function(userID, serviceIdentifierObject)
 {
   var userid;
-  var serviceIdentifierOject = new ServiceIdentifier();
+  var serviceIdentifierOject;
+  
+  userid = userID;
+  serviceIdentifierOject = serviceIdentifierObject;
   //var contextInfo = new Map();
+};
+
+isAuthorizedRequest.prototype.getUserID =function()
+{
+    return this.userid;
+};
+isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
+{
+    return this.serviceIdentifierOject;
 };
 
 
@@ -402,10 +401,8 @@ buzzAuthorization.prototype.isAuthorizedRequest = function()
  * BuzzAuthorization connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise.
  */
-buzzAuthorization.prototype.BuzzAuthorization = function(isAuthorizedRequest)
+buzzAuthorization.prototype.isAuthorized = function(isAuthorizedRequest)
 {
-      function isAuthorized(isAuthorizedRequest)
-      {
             if(isAuthorizedRequest != null)          
             { 
                 /*
