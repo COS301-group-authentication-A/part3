@@ -5,6 +5,103 @@ var Authorization;
 Authorization = function () {//Authorization class
 
 };
+
+/*
+ * class buzzAuthorization has a function prototype called isAuthorized.
+ */
+buzzAuthorization = function(){
+  
+};
+
+/*
+ * BuzzAuthorization connects to the database compares status poits from status and returns true if
+ * the status point in Buzz is less than that retrieved from status false otherwise.
+ */
+buzzAuthorization.prototype.BuzzAuthorization = function(isAuthorizedRequest)
+{
+      function isAuthorized(isAuthorizedRequest)
+      {
+            if(isAuthorizedRequest != null)          
+            { 
+                /*
+                * test weather the request is null before doing anything.
+                */
+              var getStatusProfilevalue;
+              /*
+               * @Charles please enter code to get methodName 
+               */
+              var AuthorizationRestrictionsMethodName = "updateAuthorizationRestriction";
+              var MongoClient = require('mongodb').MongoClient;
+             
+              
+              
+             MongoClient.connect("mongodb://45.55.154.156:27017/Buzz", function(err, db) 
+              {
+            	var collection = db.collection('Authorization');
+            	var boolisAuthorized = false;
+            	 /*
+            	  * Check if there is a connection error if not, find the ranking depending on it 
+            	  * set boolisAuthorized to true else false, else if the is an error set boolisAuthorized to false. 
+            	  */
+            	if(err)
+            	{
+            	  boolisAuthorized = false;
+            	  console.log("Error occured could not connect to the database");
+            	}
+            	else
+            	{
+            	  console.log("Connection success...");
+            
+            	  var results = collection.findOne({ methodName:AuthorizationRestrictionsMethodName}, function(err, item)
+            	  {
+            	    if(!err)
+            	    {
+            	      /*
+            	       * Check if item is null if yes set boolisAuthorized to false.
+            	       */
+            		if(item != null)
+            		{
+            		  
+            		  var point = parseInt(item.StatusPoints)
+            		  
+            		  /*
+            		  * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
+            		  * it is a userId.
+            		  */
+            		  getStatusProfilevalue = new getStatusForProfile(isAuthorizedRequest);
+            
+            		  if((getStatusProfilevalue > point))
+            		  {
+            		    boolisAuthorized = true;
+            		  }
+            		  else
+            		  {
+            		    boolisAuthorized = false;
+            		  }
+            		}
+            		else
+            		{
+            		    boolisAuthorized = false;
+            		}
+            	      
+            	    }
+            	  });
+            
+            
+            	  
+            	}
+            	
+            	return boolisAuthorized;
+              });         
+            }
+            return false;
+      }
+      
+}
+      
+
+
+
 Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
 //    var isAuthreq=new IsAuthorisedRequest();
