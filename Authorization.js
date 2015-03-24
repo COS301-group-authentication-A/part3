@@ -9,6 +9,7 @@ Authorization = function () {//Authorization class
 /*
  * class buzzAuthorization has a function prototype called isAuthorized.
  */
+ //#START isAuthorized
 buzzAuthorization = function(){
   
 };
@@ -99,7 +100,7 @@ buzzAuthorization.prototype.BuzzAuthorization = function(isAuthorizedRequest)
       
 }
       
-
+ //#END isAuthorized
 
 
 Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
