@@ -165,10 +165,11 @@ buzzAuthorization.prototype.isAuthorizedRequest = function()
  * 	of the object and returns it.
  * 
  */    
-buzzAuthorization.prototype.BuzzAuthorization = function()
+buzzAuthorization.prototype.BuzzAuthorization = function(isAuthorizedRequest)
 {
       function isAuthorized(isAuthorizedRequest)
       {
+	var isauthorized = false;
 	var statusProfileResults;
 	  var isAuthorizedResultObject = new isAuthorizedResult();
 	  
@@ -187,7 +188,7 @@ buzzAuthorization.prototype.BuzzAuthorization = function()
 			    
 	  }
 	  
-	  return isAuthorizedResultObject;
+	  return isauthorized;
       }
 }
 

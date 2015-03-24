@@ -478,7 +478,7 @@ buzzAuthorization.prototype.isAuthorized = function(isAuthorizedRequest)
               });         
             }
             return false;
-      }
+      
       
 }
       
