@@ -188,11 +188,22 @@ RemoveAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 //////////////////////////////AddAuthorizationRestrictionRequest class and functions////////////////////////////////////
 
 var AddAuthorizationRestrictionRequest;
-AddAuthorizationRestrictionRequest = function()
+AddAuthorizationRestrictionRequest = function(_userID, _AuthorizationRestriction)
 {
     var AuthorizationRestriction;
     this.AuthorizationRestriction=_AuthorizationRestriction;
+    var userID;
+    this.userID = _userID;
 }
+
+AddAuthorizationRestrictionRequest.prototype.getUserID=function()
+{
+    return this.userID;
+};
+AddAuthorizationRestrictionRequest.prototype.setUserID=function(_userID)
+{
+    this.userID=_userID;
+};
 
 AddAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(_AuthorizationRestriction)
 {
@@ -206,12 +217,17 @@ AddAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=functio
 //////////////////////////////AddAuthorisationRestriction class and functions///////////////////////////////////////////
 Authorization.prototype.addAuthorisationRestriction=function(AddAuthorizationReq)
 {
-    var isAuthResult = new IsAuthorisedResult();
-    if(isAuthResult(AddAuthorizationReq)){
-        var auth = new Authorization;
-        auth.updateAuthorisationRestriction(AddAuthorizationReq);
+    var isAuthReq = new isAuthorizedRequest(AddAuthorizationReq.getUserID(),AddAuthorizationReq.getServiceIdentifierOject());
+    if(isAuthorised(isAuthReq))
+    {
+        req = new UpdateAuthorizationRestrictionRequest(AddAuthorizationReq.getUserID(),AddAuthorizationReq.getAuthorizationRestriction());
+        this.updateAuthorisationRestriction(req);
     }
-    return new AddAuthorizationRestrictionsResult();
+    else
+    {
+        throw new error(NotAuthorizedEcxeption);
+    }
+    //return new AddAuthorizationRestrictionsResult();
 };
 ///////////////////////////////End of AddAuthorisationRestriction class and functions///////////////////////////////////
 ///////////////////////////////AddAuthorisationRestrictionResult class and functions////////////////////////////////////
@@ -220,7 +236,7 @@ AddAuthorizationRestrictionsResult = function ()
 {
     var AuthorizationRestriction;
 };
-//////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////
+//////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////////////////
 
 ///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
 var AuthorizationRestriction=function(serviceRestriction)//used by everyone
