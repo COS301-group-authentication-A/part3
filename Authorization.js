@@ -1,5 +1,5 @@
 //var csds = require('./csds');
-//var connect = require('./connect');
+var connect = require('../Database/connect.js');
 var Authorization;
 
 Authorization = function () {//Authorization class
@@ -9,40 +9,36 @@ Authorization = function () {//Authorization class
 
 Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
-    //var isAuthreq = new isAuthorizedRequest(UpdateAuthReq.getUserID(),UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier());
-    //if(!isAuthorised(isAuthreq))
-    // {
-    //  throw new error("NotAuthorizedEcxeption");
-    // }
-    // else {
-    var mongoose = require('mongoose');
-    mongoose.connect('mongodb://45.55.154.156:27017/Buzz');
+    var isAuthreq = new isAuthorizedRequest(UpdateAuthReq.getUserID(), UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier());
+    if (!this.isAuthorized(isAuthreq)) {
+        throw new error("NotAuthorizedEcxeption");
+    }
+    else {
+        var mongoose;
+        mongoose= require('mongoose');
+        var authSchema = new mongoose.Schema({
+            methodName: String,
+            StatusPoints: String
+        }, {collection: 'Authorization'});
+        var auth = mongoose.model('Authorization', authSchema)
+        console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName());
+        auth.findOneAndUpdate(
+            {"methodName": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()},
+            {
+                "$set": {
+                    "StatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+                }
+            },
+            function (err, doc) {
+                if (err) {
+                    console.log("Method name not found");
+                } else {
+                    mongoose.connection.close();
+                    return true;
+                }
+            });
 
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function (callback) {
-        console.log("Connection to database was successful.");
-    });
-    var authSchema=new mongoose.Schema({
-        methodName:String,
-        StatusPoints:String
-    }, { collection: 'Authorization' });
-    var auth= mongoose.model('Authorization', authSchema)
-    console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName());
-    auth.findOneAndUpdate(
-        { "methodName":UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() },
-        {
-            "$set": {
-                "StatusPoints":UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
-            }
-        },
-        function(err,doc) {
-            if (err) {
-                console.log("Method name not found");
-            } else {
-                return true;
-            }
-        });
+    }
 };
 
 
