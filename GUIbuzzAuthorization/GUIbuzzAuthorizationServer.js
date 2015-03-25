@@ -4,7 +4,8 @@ var buzzAuthorizationClasses = require("./GUIbuzzAuthorizationClasses");
 http.createServer(function(request, response) 
 {  
 	response.writeHead(200, {"Content-Type": "text/html"}); 
-	var result = buzzAuthorizationClasses.getClass();
+	var cursorObject = buzzAuthorizationClasses.getAuthorizationRestrictionsResult();
+    var json = cursorObject;
 	response.write("<!DOCTYPE html>"
 				+"<head>"
 				+"<meta charset='utf-8'>"
@@ -33,7 +34,7 @@ http.createServer(function(request, response)
 										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Separated link</a></li>"
 									+"</ul>"
 								+"</div>"
-								+"<p>"+result+""
+								+"<p>"+json+"</p>"
 								+"<div style='margin-top:20%;>"
 									+"<form class='form-inline'>"
 										+"<div class='form-group'>"
@@ -53,4 +54,4 @@ http.createServer(function(request, response)
 			+"</html>");
 	response.end();
 }).listen(8080);
-console.log('Server is listening to http://localhost/ on port 8080…');
+console.log('Server is listening to http://localhost/ on port 8080ï¿½');
