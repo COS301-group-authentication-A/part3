@@ -369,9 +369,9 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthReq)
  * class buzzAuthorization has a function prototype called isAuthorized.
  */
  //#START isAuthorized
-buzzAuthorization = function(){
+//buzzAuthorization = function(){
   
-};
+//};
 
 
 /*
@@ -405,7 +405,7 @@ isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
  * BuzzAuthorization connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise.
  */
-buzzAuthorization.prototype.isAuthorized = function(isAuthorizedRequest)
+Authorization.prototype.isAuthorized = function(isAuthorizedRequest)
 {
             if(isAuthorizedRequest != null)          
             {
