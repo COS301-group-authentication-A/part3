@@ -9,52 +9,40 @@ Authorization = function () {//Authorization class
 
 Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
-//    var isAuthreq=new IsAuthorisedRequest();
-//    isAuthreq.setUserID(UpdateAuthReq.getUserID());
-//    isAuthreq.getServiceIdentifier().setInterfaceName("Authorization");
-//    isAuthreq.getServiceIdentifier().setMethodName("updateAuthorizationRestriction");
-//    if (!isAuthorized(isAuthreq)){
-//        throw NotAuthorizeddExeption;
-//    }
-//    else
-//    {
-    //    var isAuthreq=new IsAuthorisedRequest();
-//    isAuthreq.setUserID(UpdateAuthReq.getUserID());
-//    isAuthreq.getServiceIdentifier().setInterfaceName("Authorization");
-//    isAuthreq.getServiceIdentifier().setMethodName("updateAuthorizationRestriction");
-//    if (!isAuthorized(isAuthreq)){
-//        throw NotAuthorizeddExeption;
-//    }
-//    else
-//    {
-    var Db = require('mongodb').Db,
-        MongoClient = require('mongodb').MongoClient,
-        Server = require('mongodb').Server,
-        assert = require('assert');
+    //var isAuthreq = new isAuthorizedRequest(UpdateAuthReq.getUserID(),UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier());
+    //if(!isAuthorised(isAuthreq))
+    // {
+    //  throw new error("NotAuthorizedEcxeption");
+    // }
+    // else {
+    var mongoose = require('mongoose');
+    mongoose.connect('mongodb://45.55.154.156:27017/Buzz');
 
-
-    var db = new Db('authorization', new Server('localhost', 27017));
-// Establish connection to db
-    db.open(function(err, db) {
-        // Get a collection
-        db.collection('Authentication', function (err, collection) {
-
-            // Update the document with an atomic operator
-            collection.update({_id: UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()}, {$set: {Ranking: UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()}});
-
-            // Wait for a second then fetch the document
-            setTimeout(function () {
-
-                // Fetch the document that we modified
-                collection.findOne({_id: (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName())}, function (err, item) {
-                    assert.equal(null, err);
-                    assert.equal(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName(), item._id);
-                    assert.equal(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints(), item.Ranking);
-                    db.close();
-                });
-            }, 1000);
-        })
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function (callback) {
+        console.log("Connection to database was successful.");
     });
+    var authSchema=new mongoose.Schema({
+        methodName:String,
+        StatusPoints:String
+    }, { collection: 'Authorization' });
+    var auth= mongoose.model('Authorization', authSchema)
+    console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName());
+    auth.findOneAndUpdate(
+        { "methodName":UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() },
+        {
+            "$set": {
+                "StatusPoints":UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+            }
+        },
+        function(err,doc) {
+            if (err) {
+                console.log("Method name not found");
+            } else {
+                return true;
+            }
+        });
 };
 
 
