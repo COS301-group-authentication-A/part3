@@ -120,17 +120,24 @@ var RemoveAuthorizationRestrictionsResult=function()
 };
 ///////////////////////////////End of RemoveAuthorisationRestrictionResult///////////////////////////////////////////////////
 
-
 Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
     //var isAuthRequest=new IsAuthorisedRequest();
-    var isAuthResult=new IsAuthorisedResult();
+   // var isAuthResult=new IsAuthorisedResult();
     if(isAuthResult(RemoveAuthorizationReq)){
         RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-        var uRestriction = new Authorization();
-        uRestriction.updateAuthorisationRestriction(RemoveAuthorizationReq);
+        var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
+        console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
+        b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
+
+        //var uRestriction = new Authorization();
+        this.updateAuthorisationRestriction(b);
     }
-    return new RemoveAuthorizationRestrictionsResult();
+    else{
+        throw new Error("Not authorized to remove");
+    }
+
+    //return new RemoveAuthorizationRestrictionsResult();
    // the spec says that there is no need to return anything for remove
 };
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
@@ -320,15 +327,11 @@ auth.addAuthorisationRestriction(addAuth);
 /////////////////////////test add end//////////////////////////////////
 
 ////////////////////////////test remove////////////////////////////////////
-var rSIdentifier =new ServiceIdentifier("Authorization","removeAuthorisationRestriction");
-var rServiceRestriction =new ServiceRestriction(5,rSIdentifier);
-var rAuthRestriction;
-rAuthRestriction = new AuthorizationRestriction(rServiceRestriction);
-var removeAuth;
-removeAuth = new RemoveAuthorizationRestrictionRequest("u12230830", authRestriction);
-var rAuth;
-rAuth = new Authorization;
-rAuth.removeAuthorisationRestriction(removeAuth);
+var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorisationRestriction");
+var serviceRestriction=new ServiceRestriction(6,sIdentifier);
+var authRestriction=new AuthorizationRestriction(serviceRestriction);
+var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestriction);
+auth.removeAuthorisationRestriction(removeAuth);
 /////////////////////////test remove end//////////////////////////////////
 
 //**************************getAuthorizationRestriction***************************//
