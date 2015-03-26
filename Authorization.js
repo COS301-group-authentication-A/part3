@@ -405,8 +405,11 @@ isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
 /*
  * BuzzAuthorization connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise.
+ * 
+ * isAuthorized receieve and object of isAuthorizedrequest which has an object of serviceidentifier
+ * and a userid..
  */
-Authorization.prototype.isAuthorized = function(isauthorizedRequest, theserviceIdentifierObject)
+Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
             if(isauthorizedRequest != null)          
             {
@@ -415,7 +418,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest, theserviceI
 // 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
 				
 //         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
-        			var AuthorizationRestrictionsMethodName = theserviceIdentifierObject.getServiceIdentifierMethodName();
+        			var AuthorizationRestrictionsMethodName = isauthorizedRequest.getServiceIdentifierOject().getServiceIdentifierMethodName();
         
 				var mongoose;
 				mongoose= require('mongoose');
@@ -443,7 +446,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest, theserviceI
 							* call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
 							* it is a userId.
 							*/
-							getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest);
+							getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
 					  
 							if((getStatusProfilevalue > point))
 							{
