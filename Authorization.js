@@ -445,8 +445,8 @@ var isAuthorizedRequest = function(userID, serviceIdentifierObject)
   var userid;
   var serviceIdentifierOject;
   
-  userid = userID;
-  serviceIdentifierOject = serviceIdentifierObject;
+  this.userid = userID;
+  this.serviceIdentifierOject = serviceIdentifierObject;
   //var contextInfo = new Map();
 };
 
@@ -454,7 +454,7 @@ isAuthorizedRequest.prototype.getUserID =function()
 {
     return this.userid;
 };
-isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
+isAuthorizedRequest.prototype.getisAuthorizedRequestServiceRestrictionOject=function()
 {
     return this.serviceIdentifierOject;
 };
@@ -478,7 +478,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 // 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
 				
 //         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
-        			var AuthorizationRestrictionsMethodName = isauthorizedRequest.getServiceIdentifierOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
+        			var AuthorizationRestrictionsMethodName = var AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
         
 				var mongoose;
 				mongoose= require('mongoose');
