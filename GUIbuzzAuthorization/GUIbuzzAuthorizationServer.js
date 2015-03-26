@@ -3,9 +3,28 @@ var buzzAuthorizationClasses = require("./GUIbuzzAuthorizationClasses");
 
 http.createServer(function(request, response) 
 {  
-	response.writeHead(200, {"Content-Type": "text/html"}); 
-	var cursorObject = buzzAuthorizationClasses.getAuthorizationRestrictionsResult();
-    var json = cursorObject;
+	response.writeHead(200, {"Content-Type": "text/html"});
+
+    var cursorObject = "";
+
+    buzzAuthorizationClasses.getAuthorizationResult("moveThread", function(err, getAuthorizationResult)
+    {
+        if (!err) {
+            var strTeam = "",
+                i = 0;
+            for (i = 0; i < getAuthorizationResult.count;) {
+                strTeam = strTeam + "<li>" + getAuthorizationResult.Authorization[i].methodName + "</li>";
+                i = i + 1;
+            }
+            strTeam = "<ul>" + strTeam + "</ul>";
+            cursorObject = strTeam;
+        }
+        else
+        {
+            console.log("There is an error: "+err);
+        }
+    });
+
 	response.write("<!DOCTYPE html>"
 				+"<head>"
 				+"<meta charset='utf-8'>"
@@ -34,7 +53,7 @@ http.createServer(function(request, response)
 										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Separated link</a></li>"
 									+"</ul>"
 								+"</div>"
-								+"<p>"+json+"</p>"
+								+"<p>"+cursorObject+"</p>"
 								+"<div style='margin-top:20%;>"
 									+"<form class='form-inline'>"
 										+"<div class='form-group'>"
