@@ -10,14 +10,14 @@ http.createServer(function(request, response)
     buzzAuthorizationClasses.getAuthorizationResult("moveThread", function(err, getAuthorizationResult)
     {
         if (!err) {
-            var strTeam = "",
-                i = 0;
-            for (i = 0; i < getAuthorizationResult.count;) {
-                strTeam = strTeam + "<li>" + getAuthorizationResult.Authorization[i].methodName + "</li>";
+
+            var  i = 0;
+            for (i = 0; i < getAuthorizationResult.length;) {
+                cursorObject = cursorObject + "<li>" + getAuthorizationResult[i].methodName + "</li>";
                 i = i + 1;
             }
-            strTeam = "<ul>" + strTeam + "</ul>";
-            cursorObject = strTeam;
+
+            console.log(cursorObject);
         }
         else
         {
@@ -33,7 +33,11 @@ http.createServer(function(request, response)
 				+"<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css'>"
 				+"<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css'>"
 				+"<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>"
-				+"</head>"
+				+"<script> function addRestriction(){alert('Restriction added!')};"
+                +"function removeRestriction(){alert('Restriction removed!')};"
+                +"function updateRestriction(){alert('Restriction updated!')};"
+                +"</script>"
+                +"</head>"
 					+"<body>"
 						+"<div class='container'>"
 							+"<div class='starter-template'>"
@@ -47,25 +51,22 @@ http.createServer(function(request, response)
 									+"<span class='caret'></span>"
 									+"</button>"
 									+"<ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu1'>"
-										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Action</a></li>"
-										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Another action</a></li>"
-										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Something else here</a></li>"
-										+"<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Separated link</a></li>"
+                                    +""+cursorObject.toString()+""
 									+"</ul>"
 								+"</div>"
-								+"<p>"+cursorObject+"</p>"
-								+"<div style='margin-top:20%;>"
+                                +"<p id='para1'>Output :"+cursorObject.toString()+"</p>"
+								+"<div style='margin-top:10.7%;'>"
 									+"<form class='form-inline'>"
 										+"<div class='form-group'>"
 										+"<label class='sr-only' for='exampleInputEmail3'>Ranking</label>"
 										+"<input type='email' class='form-control' id='exampleInputEmail3' placeholder='Ranking'>"
 										+"</div>"
-										+"<button type='submit' class='btn btn-primary'>Add Restriction</button>"
+										+"<button type='submit' class='btn btn-primary' onclick='addRestriction();'>Add Restriction</button>"
 									+"</form>"
 								+"</div>"
-								+"<div style='margin-left:10.7%;margin-top:-3%;'>"
-									+"<button type='button' class='btn btn-success'>Remove Restriction</button>"
-									+"<button type='button' class='btn btn-info'>Update Restriction</button>"
+								+"<div style='margin-left:25.5%;margin-top:-3%;'>"
+									+"<button type='button' class='btn btn-success' onclick='removeRestriction();'>Remove Restriction</button>"
+									+"<button type='button' class='btn btn-info' onclick='updateRestriction();'>Update Restriction</button>"
 								+"</div>"
 							+"</div>"
 						+"</div>"
