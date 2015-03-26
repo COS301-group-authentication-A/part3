@@ -478,7 +478,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 // 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
 				
 //         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
-        			var AuthorizationRestrictionsMethodName = isauthorizedRequest.getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
+        			var AuthorizationRestrictionsMethodName = isauthorizedRequest.getServiceIdentifierOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
         
 				var mongoose;
 				mongoose= require('mongoose');
