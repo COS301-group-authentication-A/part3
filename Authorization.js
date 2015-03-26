@@ -406,78 +406,66 @@ isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
  * BuzzAuthorization connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise.
  */
-Authorization.prototype.isAuthorized = function(isAuthorizedRequest)
+Authorization.prototype.isAuthorized = function(isauthorizedRequest, theserviceIdentifierObject)
 {
-            if(isAuthorizedRequest != null)          
+            if(isauthorizedRequest != null)          
             {
+				var boolisAuthorized = false;
         			var getStatusProfilevalue;
-        			var request  = new isAuthorizedRequest();
-        			var AuthorizationRestrictionsMethodName = request.serviceIdentifierOject.getServiceIdentifierMethodName();
+// 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
+				
+//         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
+        			var AuthorizationRestrictionsMethodName = theserviceIdentifierObject.getServiceIdentifierMethodName();
         
-        			var mongoose = require('mongoose');
-        			mongoose.connect('mongodb://45.55.154.156:27017/Buzz');
-        
-        			var db = mongoose.connection;
-        			db.on('error', console.error.bind(console, 'connection error:'));
-        			db.once('open', function (callback) 
-        			{
-        				var collection = db.collection('Authorization');
-        				var boolisAuthorized = false;
-        				/*
-        				  * Check if there is a connection error if not, find the ranking depending on it 
-        				  * set boolisAuthorized to true else false, else if the is an error set boolisAuthorized to false. 
-        				  */
-        				if(callback)
-        				{
-        				  boolisAuthorized = false;
-        				  console.log("Error occured could not connect to the database");
-        				}
-        				else
-        				{
-        				  console.log("Connection success...");
-        			    
-        				  var results = collection.findOne({ methodName:AuthorizationRestrictionsMethodName}, function(err, item)
-        				  {
-        				    if(!err)
-        				    {
-        				      /*
-        				      * Check if item is null if yes set boolisAuthorized to false.
-        				      */
-        					if(item != null)
-        					{
-        					  
-        					  var point = parseInt(item.StatusPoints)
-        					  //console.log(point);
-        					  /*
-        					  * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
-        					  * it is a userId.
-        					  */
-        					  getStatusProfilevalue = new getStatusForProfile(isAuthorizedRequest);
-        			    
-        					  if((getStatusProfilevalue > point))
-        					  {
-        					    boolisAuthorized = true;
-        					  }
-        					  else
-        					  {
-        					    boolisAuthorized = false;
-        					  }
-        					}
-        					else
-        					{
-        					    boolisAuthorized = false;
-        					}
-        				      
-        				    }
-        				  });
-        		    
-        				}
-        			  
-                    return boolisAuthorized;
-        
-        		    });
-                        
-                
+				var mongoose;
+				mongoose= require('mongoose');
+				var authSchema = new mongoose.Schema({
+				    methodName: String,
+				    StatusPoints: String
+				}, {collection: 'Authorization'});
+				var auth = mongoose.model('Authorization', authSchema)
+				console.log("OK going...");
+				auth.findOne({"methodName": AuthorizationRestrictionsMethodName},function (err, doc){
+					if (err) 
+					{
+					    console.log("Method name not found");
+					}
+					else 
+					{
+						console.log("Connection success...");
+
+						      if(doc != null)
+						      {
+							
+							var point = parseInt(doc.StatusPoints)
+							//console.log(point);
+							/*
+							* call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
+							* it is a userId.
+							*/
+							getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest);
+					  
+							if((getStatusProfilevalue > point))
+							{
+							  //console.log("*** " + doc);
+							  //console.log("Authentication done...");
+							  boolisAuthorized = true;
+							}
+							else
+							{
+							  //console.log("Authentication NOT done...");
+							  boolisAuthorized = false;
+							}
+						      }
+						      else
+						      {
+							  boolisAuthorized = false;
+						      }
+
+					      mongoose.connection.close();
+					    return boolisAuthorized;
+					}
+				    });
             }
             
             return false;
