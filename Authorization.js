@@ -1,5 +1,7 @@
 //var csds = require('./csds');
+/*COMMENTED THIS OUT FOR TESTING [SHAUN]
 var connect = require('../Database/connect.js');
+ COMMENTED THIS OUT FOR TESTING [SHAUN]*/
 var Authorization;
 
 Authorization = function () {//Authorization class
@@ -336,34 +338,90 @@ var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestric
 auth.removeAuthorisationRestriction(removeAuth);
 /////////////////////////test remove end//////////////////////////////////
 
+/////////////////////////test get end//////////////////////////////////
+var auth=new Authorization;
+var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
+var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+var authRestriction=new AuthorizationRestriction(serviceRestriction);
+getAuthorizationRestriction(authRestriction);
+
 //**************************getAuthorizationRestriction***************************//
-Authorization.prototype.getAuthorizationRestriction = function(getAuthReq)
+
+Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationReq)
 {
-    var getAuthorizationRequestResult;//this holds the returned (cursor) object which is going to be decoded to get the rest of the information.
+    var mongo = require('mongodb'),
+        Server = mongo.Server,
+        Db = mongo.Db;
+    var server = new Server('45.55.154.156', 27017, {
+        auto_reconnect: true
+    });
+    var db = new Db('Buzz', server);
+    var onErr = function(err, callback) {
+        db.close();
+        callback(err);
+    };
 
-    var Db = require('mongodb').Db,
-    MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server,
-    assert = require('assert');
+    var getAuthorizationRestrictionRequest = getAuthorizationReq.getServiceRestriction().getServiceRestrictionServiceIdentifier();
 
-    var db = new Db('authorization', new Server('localhost', 27017));
-    // Establish connection to db
-    db.open(function(err, db)
+    this.getAuthorizationRestrictionResult(getAuthorizationRestrictionRequest, function(err, getAuthorizationRestrictionResult)
     {
-        // Get a collection
-        db.collection('Authentication', function (err, collection)
-        {
-            // Fetch the requested restriction object according to the request.
-            getAuthorizationRequestResult = collection.find(
-                                            {
-                                                "serviceName" : getAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()
-                                            })
-        })
-    })
+        console.log(JSON.stringify(getAuthorizationRestrictionResult))
+    });
 
-    return getAuthorizationRequestResult;
+    //getAuthorizationRestrictionResult
+    exports.getAuthorizationRestrictionResult = function(req, callback)
+    {
+        var stringToReturn = "";
+
+        db.open(function(err, db) {
+            if (!err) {
+                db.collection('Authorization', function(err, collection) {
+                    if (!err)
+                    {
+                        collection.find({
+                            'methodName': req//uncommenting this will return the specified restriction
+                        }).toArray(function(err, docs)
+                        {
+                            if (!err)
+                            {
+                                db.close();
+                                var intCount = docs.length;
+                                if (intCount > 0)
+                                {
+                                    var strJson = "";
+                                    for (var i = 0; i < intCount;)
+                                    {
+                                        strJson += '{"StatusPoints":"' + docs[i].StatusPoints + '"}'
+                                        i = i + 1;
+                                        if (i < intCount)
+                                        {
+                                            strJson += ',';
+                                        }
+                                    }
+                                    strJson = '{"methodName":"' + req + '","count":' + intCount + ',"Authorization":[' + strJson + "]}"
+                                    callback("", JSON.parse(strJson));
+                                }
+                            }
+                            else
+                            {
+                                onErr(err, callback);
+                            }
+                        }); //end collection.find
+                    }
+                    else
+                    {
+                        onErr(err, callback);
+                    }
+                }); //end db.collection
+            }
+            else
+            {
+                onErr(err, callback);
+            }
+        }); // end db.open
+    };
 }
-//***********************************end************************************//
+//***********************************end of getAuthorizationRestrictions************************************//
 
 
 /*
@@ -381,6 +439,7 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthReq)
  *	- serviceIdentifierOject: ServiceIdentifier
  *	- contextInfo: Map from generic 
  */
+
 var isAuthorizedRequest = function(userID, serviceIdentifierObject)
 {
   var userid;
@@ -409,6 +468,7 @@ isAuthorizedRequest.prototype.getServiceIdentifierOject=function()
  * isAuthorized receieve and object of isAuthorizedrequest which has an object of serviceidentifier
  * and a userid..
  */
+
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
             if(isauthorizedRequest != null)          
@@ -445,8 +505,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 							/*
 							* call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
 							* it is a userId.
-							*/
-							getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
+							*/				getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
 					  
 							if((getStatusProfilevalue > point))
 							{
@@ -476,4 +535,3 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 }
       
  //#END isAuthorized -----------------------
-
