@@ -126,7 +126,7 @@ Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizat
    // var isAuthResult=new IsAuthorisedResult();
     var isAuthReq = new isAuthorizedRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier();
     
-    if(isAuthResult(RemoveAuthorizationReq)){
+    if(isAuthorized(isAuthReq){
         RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
         var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
         console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
