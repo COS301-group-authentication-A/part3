@@ -596,10 +596,9 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 				 * Fetch user role for a specific student returns getUsersRolesForModuleResults object.
 				 */
 				role = new getUsersRolesForModule(new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getBuzzSpaceObject().getModuleID()));
-				
-//				console.log("Academic year: " + isauthorizedRequest.getBuzzSpaceObject().getAcademicYear()+"\n");
-//				console.log("Module ID: " + isauthorizedRequest.getBuzzSpaceObject().getModuleID() +"\n");
-//				console.log("IsOpen: " + isauthorizedRequest.getBuzzSpaceObject().getIsOpen()+"\n");
+				/*
+				* role.getRole() gets the role from the getUsersRolesForModuleResults object.
+				*/
 				if(guestRole == role.getRole())
 				{
 				  return false;
