@@ -1,0 +1,3 @@
+How to call isAuthorized:
+ It receives an isAuthorizedRequest object, the isAuthorizedRequest class which receives a userID and
+ a service restriction object and you pass in the isAuthorizedRequest object to isAuthorized.
