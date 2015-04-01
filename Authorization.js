@@ -424,6 +424,84 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
 //***********************************end of getAuthorizationRestrictions************************************//
 
 
+//DUMMY BUZZSPACE HAS TO BE REMOVED BEFORE INTERGRATION
+/*
+ * @param studentAcademicYear
+ * 	it is the academic year of the student
+ * @param isOpen
+ * 	boolean value
+ * @param studentModuleid
+ * 	e.g COS330 
+ */
+// Has to be removed it is just for testing  
+//*********************************************************************
+var BuzzSpace = function(studentAcademicYear, _isOpen, studentModuleid)
+{
+  var academicYear;
+  var isOpen;
+  var moduleid;
+  
+  this.academicYear = studentAcademicYear;
+  this.isOpen = _isOpen;
+  this.moduleid = studentModuleid;
+};
+
+BuzzSpace.prototype.getAcademicYear =function()
+{
+    return this.academicYear;
+};
+
+BuzzSpace.prototype.getIsOpen =function()
+{
+    return this.isOpen;
+};
+
+BuzzSpace.prototype.getModuleID =function()
+{
+    return this.moduleid;
+};
+
+var getUsersRolesForModule = function(usersRolesForModuleRequest)
+{
+  var roleModuleRequest;
+  var rolelec;
+  this.rolelec = "lecture";
+  this.roleModuleResults = usersRolesForModuleRequest;
+}
+
+getUsersRolesForModule.prototype.getUsersRoleResult =function()
+{
+    return this.roleModuleResults;
+};
+
+getUsersRolesForModule.prototype.getRole =function()
+{
+    return this.rolelec;
+};
+
+
+var GetUsersRolesForModuleRequest = function(userId, moduleId)
+{
+  var userid;
+  var moduleid;
+  this.userid = userId;
+  this.moduleid = moduleId;
+}
+
+GetUsersRolesForModuleRequest.prototype.getUserID =function()
+{
+    return this.userid;
+};
+
+GetUsersRolesForModuleRequest.prototype.getUserID =function()
+{
+    return this.moduleid;
+};
+//*********************************************************************
+//END TESTING FUNCTION
+
+
+
 /*
  * class buzzAuthorization has a function prototype called isAuthorized.
  */
@@ -435,19 +513,19 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
 
 /*
  * isAuthorizedRequest inherits from buzzAuthorization has one virable and two objects:
- * 	- userid: virable
- *	- serviceIdentifierOject: ServiceIdentifier
- *	- contextInfo: Map from generic 
+ * 	@param userid
+ *	@param serviceIdentifierOject: ServiceIdentifier object
+ * 	@param buzzSpaceObject: BuzzSpace object for getting moduleid
  */
-
-var isAuthorizedRequest = function(userID, serviceServiceRistrictionObject)
+var isAuthorizedRequest = function(userID, theServiceRestrictionObject, buzzSpaceObject)
 {
   var userid;
-  var serviceRistrictionOject;
+  var serviceIdentifierOject;
+  var BuzzSpaceObject;
   
   this.userid = userID;
-  this.serviceRistrictionOject = serviceServiceRistrictionObject;
-  //var contextInfo = new Map();
+  this.serviceIdentifierOject = theServiceRestrictionObject;
+  this.BuzzSpaceObject = buzzSpaceObject;
 };
 
 isAuthorizedRequest.prototype.getUserID =function()
@@ -456,10 +534,24 @@ isAuthorizedRequest.prototype.getUserID =function()
 };
 isAuthorizedRequest.prototype.getisAuthorizedRequestServiceRestrictionOject=function()
 {
-    return this.serviceRistrictionOject;
+    return this.serviceIdentifierOject;
 };
 
+isAuthorizedRequest.prototype.setit=function(sumsum)
+{
+    this.serviceIdentifierOject = sumsum;
+};
 
+//@param buzzObj set buzz space object
+isAuthorizedRequest.prototype.setBuzzSpaceObject = function(buzzObj)
+{
+  this.BuzzSpaceObject = buzzObj;
+}
+//@param buzzObj set buzz space object
+isAuthorizedRequest.prototype.getBuzzSpaceObject = function()
+{
+  return this.BuzzSpaceObject;
+}
 
 /*
  * BuzzAuthorization connects to the database compares status poits from status and returns true if
@@ -467,6 +559,7 @@ isAuthorizedRequest.prototype.getisAuthorizedRequestServiceRestrictionOject=func
  * 
  * isAuthorized receieve and object of isAuthorizedrequest which has an object of serviceidentifier
  * and a userid..
+ * @param isauthorizedRequest: isAuthorizedRequest object
  */
 
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
@@ -475,19 +568,51 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
             {
 				var boolisAuthorized = false;
         			var getStatusProfilevalue;
+				var mongoose;
+				var AuthorizationRestrictionsMethodName;
+				var authSchema;
+				var auth;
+				var role;
 // 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
 				
 //         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
-        			var AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
-        
-				var mongoose;
+				var lectureRole = "lecture";
+				var teachingAssistantRole = "teachingAssistant";
+				var studentRole = "student";
+				var guestRole = "guest";
+				
+				
+				
+        			AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
+
+				
 				mongoose= require('mongoose');
-				var authSchema = new mongoose.Schema({
+				authSchema = new mongoose.Schema({
 				    methodName: String,
 				    StatusPoints: String
 				}, {collection: 'Authorization'});
-				var auth = mongoose.model('Authorization', authSchema)
-				console.log("OK going...");
+				
+				/*
+				 * Fetch user role for a specific student returns getUsersRolesForModuleResults object.
+				 */
+				role = new getUsersRolesForModule(new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getBuzzSpaceObject().getModuleID()));
+				
+//				console.log("Academic year: " + isauthorizedRequest.getBuzzSpaceObject().getAcademicYear()+"\n");
+//				console.log("Module ID: " + isauthorizedRequest.getBuzzSpaceObject().getModuleID() +"\n");
+//				console.log("IsOpen: " + isauthorizedRequest.getBuzzSpaceObject().getIsOpen()+"\n");
+				if(guestRole == role.getRole())
+				{
+				  return false;
+				}
+				
+				if(lectureRole == role.getRole() || teachingAssistantRole == role.getRole())
+				{
+				  return true;
+				}
+
+				
+				auth = mongoose.model('Authorization', authSchema);
+
 				auth.findOne({"methodName": AuthorizationRestrictionsMethodName},function (err, doc){
 					if (err) 
 					{
@@ -499,25 +624,22 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
 						      if(doc != null)
 						      {
-							
-							var point = parseInt(doc.StatusPoints)
-							//console.log(point);
-							/*
-							* call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
-							* it is a userId.
-							*/				getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
-					  
-							if((getStatusProfilevalue > point))
-							{
-							  //console.log("*** " + doc);
-							  //console.log("Authentication done...");
-							  boolisAuthorized = true;
-							}
-							else
-							{
-							  //console.log("Authentication NOT done...");
-							  boolisAuthorized = false;
-							}
+							    var point = parseInt(doc.StatusPoints)
+							    console.log(point);
+							    /*
+							    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
+							    * it is a userId.
+							    */
+							    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
+					      
+							    if((getStatusProfilevalue > point && role.getRole() == studentRole))
+							    {
+							      boolisAuthorized = true;
+							    }
+							    else
+							    {
+							      boolisAuthorized = false;
+							    }
 						      }
 						      else
 						      {
@@ -529,7 +651,6 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 					}
 				    });
             }
-            
             return false;
       
 }
