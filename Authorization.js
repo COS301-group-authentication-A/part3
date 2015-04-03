@@ -618,7 +618,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 						    */
 						    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
 				      
-						    if((getStatusProfilevalue > point && role.getRole() == studentRole))
+						    if((getStatusProfilevalue > point && role.getRolesForModule() == studentRole))
 						    {
 						      boolisAuthorized = true;
 						    }
