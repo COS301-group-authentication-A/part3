@@ -1,9 +1,7 @@
 //var csds = require('./csds');
-/*COMMENTED THIS OUT FOR TESTING [SHAUN]
-var connect = require('../Database/connect.js');
- COMMENTED THIS OUT FOR TESTING [SHAUN]*/
+var connect = require('./connect.js');//to connect to the database
 var Authorization;
-
+var mongoose;
 Authorization = function () {//Authorization class
 
 };
@@ -16,19 +14,20 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     //  throw new error("NotAuthorizedEcxeption");
     //}
     //else {
-    var mongoose;
     mongoose= require('mongoose');
+    //createing the schema
     var authSchema = new mongoose.Schema({
         methodName: String,
         StatusPoints: String
     }, {collection: 'Authorization'});
     var auth;
+    // checks if it is the first time accesing the database
     if(mongoose.models.Authorization) {
         auth = mongoose.model('Authorization');
     }else {
         auth = mongoose.model('Authorization', authSchema);
     }
-    console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName());
+    //finding the entry and updateing it
     auth.findOneAndUpdate(
         {"methodName": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()},
         {
@@ -39,20 +38,19 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
         function (err, doc) {
             if (err) {
                 console.log("Method name not found");
-            } else {
-                mongoose.connection.close();
+            } else{
                 return true;
             }
         });
 
-    //s}
+    //}
 };
 ///////////////unit testing///////////////////////////
 Authorization.prototype.test=function()
 {
     ////////////////////////////test////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
-    var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var serviceRestriction=new ServiceRestriction(3,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction);
     var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
     var auth=new Authorization;
@@ -60,7 +58,7 @@ Authorization.prototype.test=function()
 /////////////////////////test end//////////////////////////////////
 
 ////////////////////////////test add////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
+    var sIdentifier=new ServiceIdentifier("Authorization","addAuthorizationRestriction");
     var serviceRestriction=new ServiceRestriction(4,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction);
     var addAuth=new AddAuthorizationRestrictionRequest("u13397134",authRestriction);
@@ -69,14 +67,14 @@ Authorization.prototype.test=function()
 /////////////////////////test add end//////////////////////////////////
 
 ////////////////////////////test remove////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorisationRestriction");
+    var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
     var serviceRestriction=new ServiceRestriction(6,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction);
     var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestriction);
     var auth2=new Authorization;
     auth2.removeAuthorisationRestriction(removeAuth);
 /////////////////////////test remove end//////////////////////////////////
-
+    //mongoose.connection.close();
 };
 ///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
