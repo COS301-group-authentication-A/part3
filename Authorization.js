@@ -515,11 +515,11 @@ GetUsersRolesForModuleRequest.prototype.getModuleID =function()
 var isAuthorizedRequest = function(userID, theServiceRestrictionObject, moduleID)
 {
   var userid;
-  var serviceIdentifierOject;
+  var serviceRestrictionOject;
   var moduleid;
   
   this.userid = userID;
-  this.serviceIdentifierOject = theServiceRestrictionObject;
+  this.serviceRestrictionOject = theServiceRestrictionObject;
   this.moduleid = moduleID;
 };
 
@@ -529,17 +529,22 @@ isAuthorizedRequest.prototype.getUserID =function()
 };
 isAuthorizedRequest.prototype.getisAuthorizedRequestServiceRestrictionOject=function()
 {
-    return this.serviceIdentifierOject;
+    return this.serviceRestrictionOject;
 };
 
-isAuthorizedRequest.prototype.setit=function(sumsum)
+isAuthorizedRequest.prototype.setServiceRestrictionObject=function(servicerestrictionUpdate)
 {
-    this.serviceIdentifierOject = sumsum;
+    this.serviceRestrictionOject = servicerestrictionUpdate;
 };
 
 isAuthorizedRequest.prototype.getModuleID = function()
 {
   return this.moduleid;
+};
+
+isAuthorizedRequest.prototype.setModuleID = function(moduleID)
+{
+   this.moduleid = moduleID;
 };
 
 /*
