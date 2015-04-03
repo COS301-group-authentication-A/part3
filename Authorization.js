@@ -74,6 +74,15 @@ Authorization.prototype.test=function()
     var auth2=new Authorization;
     auth2.removeAuthorisationRestriction(removeAuth);
 /////////////////////////test remove end//////////////////////////////////
+////////////////////////////test isAuthorized ////////////////////////////////////
+
+var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
+var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+var buzzspace = new BuzzSpace("3",true,"COS301");
+var authRestriction=new isAuthorizedRequest("u12345678", serviceRestriction, buzzspace);
+
+////////////////////////////test isAuthorized ////////////////////////////////////
+
     //mongoose.connection.close();
 };
 ///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
@@ -583,9 +592,9 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 			var roleRequest = new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getBuzzSpaceObject().getModuleID());
 			role = new getUsersRolesForModule(roleRequest);
 			
-			console.log("Academic year: " + isauthorizedRequest.getBuzzSpaceObject().getAcademicYear()+"\n");
-			console.log("Module ID: " + isauthorizedRequest.getBuzzSpaceObject().getModuleID() +"\n");
-			console.log("IsOpen: " + isauthorizedRequest.getBuzzSpaceObject().getIsOpen()+"\n");
+		//	console.log("Academic year: " + isauthorizedRequest.getBuzzSpaceObject().getAcademicYear()+"\n");
+		//	console.log("Module ID: " + isauthorizedRequest.getBuzzSpaceObject().getModuleID() +"\n");
+		//	console.log("IsOpen: " + isauthorizedRequest.getBuzzSpaceObject().getIsOpen()+"\n");
 			if(guestRole == role.getRolesForModule())
 			{
 			  return false;
@@ -618,7 +627,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 						    */
 						    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
 				      
-						    if((getStatusProfilevalue > point && role.getRolesForModule() == studentRole))
+						    if(getStatusProfilevalue > point)
 						    {
 						      boolisAuthorized = true;
 						    }
