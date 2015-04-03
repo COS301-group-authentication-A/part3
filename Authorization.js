@@ -451,20 +451,19 @@ BuzzSpace.prototype.getModuleID =function()
 
 var getUsersRolesForModule = function(usersRolesForModuleRequest)
 {
-  var roleModuleRequest;
-  var rolelec;
-  this.rolelec = "lecture";
-  this.roleModuleResults = usersRolesForModuleRequest;
+  var roleForModule;
+  this.rolesForModule = "guest";
+  this.roleModuleRequest = usersRolesForModuleRequest;
 }
 
-getUsersRolesForModule.prototype.getUsersRoleResult =function()
+getUsersRolesForModule.prototype.getUsersRoleRequestObject =function()
 {
-    return this.roleModuleResults;
+    return this.roleModuleRequest;
 };
 
-getUsersRolesForModule.prototype.getRole =function()
+getUsersRolesForModule.prototype.getRolesForModule =function()
 {
-    return this.rolelec;
+    return this.rolesForModule;
 };
 
 
@@ -481,13 +480,12 @@ GetUsersRolesForModuleRequest.prototype.getUserID =function()
     return this.userid;
 };
 
-GetUsersRolesForModuleRequest.prototype.getUserID =function()
+GetUsersRolesForModuleRequest.prototype.getModuleID =function()
 {
     return this.moduleid;
 };
 //*********************************************************************
-//END TESTING FUNCTION
-
+//END DUMMY FUNCTIONS
 
 
 /*
@@ -542,102 +540,103 @@ isAuthorizedRequest.prototype.getBuzzSpaceObject = function()
 }
 
 /*
- * BuzzAuthorization connects to the database compares status poits from status and returns true if
- * the status point in Buzz is less than that retrieved from status false otherwise.
+ * isAuthorized connects to the database compares status poits from status and returns true if
+ * the status point in Buzz is less than that retrieved from status false otherwise, it also checks
+ * the user roles (student, lecture ...) for a module and based on that true or false is returned.
  * 
- * isAuthorized receieve and object of isAuthorizedrequest which has an object of serviceidentifier
- * and a userid..
+ * isAuthorized receieve and object of isAuthorizedrequest which has an object of service restriction
+ * and a userid and a buzz space object..
  * @param isauthorizedRequest: isAuthorizedRequest object
  */
 
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
             if(isauthorizedRequest != null)          
-            {
-				var boolisAuthorized = false;
-        			var getStatusProfilevalue;
-				var mongoose;
-				var AuthorizationRestrictionsMethodName;
-				var authSchema;
-				var auth;
-				var role;
-// 				var sIdentifier=new ServiceIdentifier("Authorization","addAuthorisationRestriction");
-				
-//         			var request  = new isAuthorizedRequest(isauthorizedRequest, sIdentifier);
-				var lectureRole = "lecture";
-				var teachingAssistantRole = "teachingAssistant";
-				var studentRole = "student";
-				var guestRole = "guest";
-				
-				
-				
-        			AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
-
-				
-				mongoose= require('mongoose');
-				authSchema = new mongoose.Schema({
-				    methodName: String,
-				    StatusPoints: String
-				}, {collection: 'Authorization'});
-				
-				/*
-				 * Fetch user role for a specific student returns getUsersRolesForModuleResults object.
-				 */
-				role = new getUsersRolesForModule(new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getBuzzSpaceObject().getModuleID()));
-				/*
-				* role.getRole() gets the role from the getUsersRolesForModuleResults object.
-				*/
-				if(guestRole == role.getRole())
+            {				
+            		var boolisAuthorized = false;
+			var getStatusProfilevalue;
+			var mongoose;
+			var AuthorizationRestrictionsMethodName;
+			var authSchema;
+			var auth;
+			var role;
+			
+			var lectureRole = "lecture";
+			var teachingAssistantRole = "teachingAssistant";
+			var studentRole = "student";
+			var guestRole = "guest";
+			
+			
+			
+			AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
+	
+			
+			mongoose= require('mongoose');
+			authSchema = new mongoose.Schema({
+			    methodName: String,
+			    StatusPoints: String
+			}, {collection: 'Authorization'});
+			
+			/*
+			 * Fetch user roles for a specific student and module
+			 */
+			var roleRequest = new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getBuzzSpaceObject().getModuleID());
+			role = new getUsersRolesForModule(roleRequest);
+			
+			console.log("Academic year: " + isauthorizedRequest.getBuzzSpaceObject().getAcademicYear()+"\n");
+			console.log("Module ID: " + isauthorizedRequest.getBuzzSpaceObject().getModuleID() +"\n");
+			console.log("IsOpen: " + isauthorizedRequest.getBuzzSpaceObject().getIsOpen()+"\n");
+			if(guestRole == role.getRolesForModule())
+			{
+			  return false;
+			}
+			
+			if(lectureRole == role.getRolesForModule() || teachingAssistantRole == role.getRolesForModule())
+			{
+			  return true;
+			}
+	
+			
+			auth = mongoose.model('Authorization', authSchema);
+	
+			auth.findOne({"methodName": AuthorizationRestrictionsMethodName},function (err, doc){
+				if (err) 
 				{
-				  return false;
+				    console.log("Method name not found");
 				}
-				
-				if(lectureRole == role.getRole() || teachingAssistantRole == role.getRole())
+				else 
 				{
-				  return true;
+					console.log("Connection success...");
+	
+					      if(doc != null)
+					      {
+						    var point = parseInt(doc.StatusPoints)
+						    console.log(point);
+						    /*
+						    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
+						    * it is a userId.
+						    */
+						    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
+				      
+						    if((getStatusProfilevalue > point && role.getRole() == studentRole))
+						    {
+						      boolisAuthorized = true;
+						    }
+						    else
+						    {
+						      boolisAuthorized = false;
+						    }
+					      }
+					      else
+					      {
+						  boolisAuthorized = false;
+					      }
+	
+				      mongoose.connection.close();
+				    return boolisAuthorized;
 				}
-
-				
-				auth = mongoose.model('Authorization', authSchema);
-
-				auth.findOne({"methodName": AuthorizationRestrictionsMethodName},function (err, doc){
-					if (err) 
-					{
-					    console.log("Method name not found");
-					}
-					else 
-					{
-						console.log("Connection success...");
-
-						      if(doc != null)
-						      {
-							    var point = parseInt(doc.StatusPoints)
-							    console.log(point);
-							    /*
-							    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
-							    * it is a userId.
-							    */
-							    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
-					      
-							    if((getStatusProfilevalue > point && role.getRole() == studentRole))
-							    {
-							      boolisAuthorized = true;
-							    }
-							    else
-							    {
-							      boolisAuthorized = false;
-							    }
-						      }
-						      else
-						      {
-							  boolisAuthorized = false;
-						      }
-
-					      mongoose.connection.close();
-					    return boolisAuthorized;
-					}
-				    });
-            }
+			    });
+		}
             return false;
       
 }
