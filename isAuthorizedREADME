@@ -1,16 +1,15 @@
 How to call isAuthorized:
  It receives an isAuthorizedRequest which takes in three parameters a userID, theServiceRestrictionObject 
- and buzzSpaceObject to get the moduleid for GetUsersRolesForModuleRequest.
- buzzSpace class receives academicYear , isOpen a boolean, moduleid e.g COS330.
- var isAuthorizedRequest = function(userID, theServiceRestrictionObject, buzzSpaceObject)
+ and moduleID of type string.
+ var isAuthorizedRequest = function(userID, theServiceRestrictionObject, moduleID)
  {
    var userid;
    var serviceIdentifierOject;
-   var BuzzSpaceObject;
+   var moduleid;
    
    this.userid = userID;
    this.serviceIdentifierOject = theServiceRestrictionObject;
-   this.BuzzSpaceObject = buzzSpaceObject;
+   this.moduleid = moduleID;
  };
 
 Then this isAuthorizedRequest object is passed in isAuthorized.
