@@ -257,8 +257,12 @@ AddAuthorizationRestrictionsResult = function ()
 //////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////////////////
 
 ///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
-var AuthorizationRestriction=function(serviceRestriction)//used by everyone
+var AuthorizationRestriction=function(serviceRestriction,moduleID,roleName)//used by everyone
 {
+    var moduleID;
+    this.moduleID=moduleID;
+    var roleName;
+    this.roleName=roleName;
     var ServiceRestriction;
     this.ServiceRestriction=serviceRestriction;
 };
