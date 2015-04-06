@@ -17,8 +17,10 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     mongoose= require('mongoose');
     //createing the schema
     var authSchema = new mongoose.Schema({
-        methodName: String,
-        StatusPoints: String
+        methodNameAndModuleID: String,
+        LecturerStatusPoints: Number,
+        TutorStatusPoints: Number,
+        StudentStatusPoints: Number
     }, {collection: 'Authorization'});
     var auth;
     // checks if it is the first time accesing the database
@@ -28,20 +30,59 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
         auth = mongoose.model('Authorization', authSchema);
     }
     //finding the entry and updateing it
-    auth.findOneAndUpdate(
-        {"methodName": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()},
-        {
-            "$set": {
-                "StatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
-            }
-        },
-        function (err, doc) {
-            if (err) {
-                console.log("Method name not found");
-            } else{
-                return true;
-            }
-        });
+    if(((UpdateAuthReq.getAuthorizationRestriction().getRoleName()).localeCompare("Lecturer"))==0) {
+        auth.findOneAndUpdate(
+            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
+            {
+                "$set": {
+                    "LecturerStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+                }
+            },
+            function (err, doc) {
+                if (err) {
+                    console.log("Method name not found");
+                } else {
+                    return true;
+                }
+            });
+    }
+    else if((UpdateAuthReq.getAuthorizationRestriction().getRoleName().localeCompare("Tutor"))==0) {
+        auth.findOneAndUpdate(
+            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
+            {
+                "$set": {
+                    "TutorStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+                }
+            },
+            function (err, doc) {
+                if (err) {
+                    console.log("Method name not found");
+                } else {
+                    return true;
+                }
+            });
+    }
+    else if((UpdateAuthReq.getAuthorizationRestriction().getRoleName().localeCompare("Student"))==0) {
+        console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID());
+        auth.findOneAndUpdate(
+            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
+            {
+                "$set": {
+                    "StudentStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+                }
+            },
+            function (err, doc) {
+                if (err) {
+                    console.log("Method name not found");
+                } else {
+                    return true;
+                }
+            });
+    }
+    else
+    {
+        console.log("roleName not found");
+    }
 
     //}
 };
@@ -50,12 +91,12 @@ Authorization.prototype.test=function()
 {
     ////////////////////////////test////////////////////////////////////
     var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(3,sIdentifier);
-    var authRestriction=new AuthorizationRestriction(serviceRestriction);
+    var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
     var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
     var auth=new Authorization;
     auth.updateAuthorisationRestriction(updateAuth);
-/////////////////////////test end//////////////////////////////////
+/*/////////////////////////test end//////////////////////////////////
 
 ////////////////////////////test add////////////////////////////////////
     var sIdentifier=new ServiceIdentifier("Authorization","addAuthorizationRestriction");
@@ -82,8 +123,8 @@ var serviceRestriction=new ServiceRestriction(2,sIdentifier);
 var authRestriction=new isAuthorizedRequest("u12345678", serviceRestriction, "COS301");
 
 ////////////////////////////test isAuthorized ////////////////////////////////////
-
-    //mongoose.connection.close();
+*/
+    mongoose.connection.close();
 };
 ///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
@@ -282,6 +323,14 @@ AuthorizationRestriction.prototype.getServiceRestriction=function()
 AuthorizationRestriction.prototype.getServiceRestriction=function()
 {
     return this.ServiceRestriction;
+};
+AuthorizationRestriction.prototype.getModuleID=function()
+{
+    return this.moduleID;
+};
+AuthorizationRestriction.prototype.getRoleName=function()
+{
+    return this.roleName;
 };
 ///////////////////////////////End of Authorisation restriction class and functions///////////////////////////////////////////////////
 ///////////////////////////////Service restriction class and functions///////////////////////////////////////////////////
