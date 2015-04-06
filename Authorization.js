@@ -12,15 +12,13 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     //var isAuthreq = new isAuthorizedRequest(UpdateAuthReq.getUserID(), UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier());
     //if (!this.isAuthorized(isAuthreq)) {
     //  throw new error("NotAuthorizedEcxeption");
-    //}
-    //else {
     mongoose= require('mongoose');
     //createing the schema
     var authSchema = new mongoose.Schema({
-        methodNameAndModuleID: String,
-        LecturerStatusPoints: Number,
-        TutorStatusPoints: Number,
-        StudentStatusPoints: Number
+        methodName: String,
+        moduleID: String,
+        roleName: String,
+        StatusPoints: Number
     }, {collection: 'Authorization'});
     var auth;
     // checks if it is the first time accesing the database
@@ -30,68 +28,29 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
         auth = mongoose.model('Authorization', authSchema);
     }
     //finding the entry and updateing it
-    if(((UpdateAuthReq.getAuthorizationRestriction().getRoleName()).localeCompare("Lecturer"))==0) {
         auth.findOneAndUpdate(
-            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
+            {"methodName": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()),
+            "moduleID":(UpdateAuthReq.getAuthorizationRestriction().getModuleID()),"roleName":(UpdateAuthReq.getAuthorizationRestriction().getRoleName())},
             {
                 "$set": {
-                    "LecturerStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
+                    "StatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
                 }
             },
             function (err, doc) {
                 if (err) {
-                    console.log("Method name not found");
+                    console.log("Entry not found");
+                    return null;
                 } else {
-                    return true;
+                    return new UpdateAuthorizationRestrictionsResult(UpdateAuthReq.getAuthorizationRestriction());
                 }
             });
-    }
-    else if((UpdateAuthReq.getAuthorizationRestriction().getRoleName().localeCompare("Tutor"))==0) {
-        auth.findOneAndUpdate(
-            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
-            {
-                "$set": {
-                    "TutorStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
-                }
-            },
-            function (err, doc) {
-                if (err) {
-                    console.log("Method name not found");
-                } else {
-                    return true;
-                }
-            });
-    }
-    else if((UpdateAuthReq.getAuthorizationRestriction().getRoleName().localeCompare("Student"))==0) {
-        console.log(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID());
-        auth.findOneAndUpdate(
-            {"methodNameAndModuleID": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName() + UpdateAuthReq.getAuthorizationRestriction().getModuleID())},
-            {
-                "$set": {
-                    "StudentStatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
-                }
-            },
-            function (err, doc) {
-                if (err) {
-                    console.log("Method name not found");
-                } else {
-                    return true;
-                }
-            });
-    }
-    else
-    {
-        console.log("roleName not found");
-    }
-
-    //}
 };
 ///////////////unit testing///////////////////////////
 Authorization.prototype.test=function()
 {
     ////////////////////////////test////////////////////////////////////
     var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+    var serviceRestriction=new ServiceRestriction(8,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
     var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
     var auth=new Authorization;
@@ -153,9 +112,14 @@ UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 };
 //////////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////////
 ///////////////////////////////Update Authorisation restriction result class and functions///////////////////////////////////////////////////
-var UpdateAuthorizationRestrictionsResult=function()
+var UpdateAuthorizationRestrictionsResult=function(AuthorizationRestriction)
 {
     var  AuthorizationRestriction;
+    this.AuthorizationRestriction=AuthorizationRestriction;
+};
+UpdateAuthorizationRestrictionsResult.prototype,getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
 };
 ///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 
@@ -697,7 +661,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 		}
             return false;
       
-}
+};
       
  //#END isAuthorized -----------------------
 var a=new Authorization;
