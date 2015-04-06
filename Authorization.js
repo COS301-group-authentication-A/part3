@@ -9,9 +9,6 @@ Authorization = function () {//Authorization class
 
 Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
-    //var isAuthreq = new isAuthorizedRequest(UpdateAuthReq.getUserID(), UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier());
-    //if (!this.isAuthorized(isAuthreq)) {
-    //  throw new error("NotAuthorizedEcxeption");
     mongoose= require('mongoose');
     //createing the schema
     var authSchema = new mongoose.Schema({
@@ -29,7 +26,7 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
     }
     //finding the entry and updateing it
         auth.findOneAndUpdate(
-            {"methodName": (UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()),
+            {"methodName":(UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()),
             "moduleID":(UpdateAuthReq.getAuthorizationRestriction().getModuleID()),"roleName":(UpdateAuthReq.getAuthorizationRestriction().getRoleName())},
             {
                 "$set": {
@@ -45,46 +42,7 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
                 }
             });
 };
-///////////////unit testing///////////////////////////
-Authorization.prototype.test=function()
-{
-    ////////////////////////////test////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(8,sIdentifier);
-    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
-    var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
-    var auth=new Authorization;
-    auth.updateAuthorisationRestriction(updateAuth);
-/*/////////////////////////test end//////////////////////////////////
 
-////////////////////////////test add////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","addAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(4,sIdentifier);
-    var authRestriction=new AuthorizationRestriction(serviceRestriction);
-    var addAuth=new AddAuthorizationRestrictionRequest("u13397134",authRestriction);
-    var auth1=new Authorization;
-    auth1.addAuthorisationRestriction(addAuth);
-/////////////////////////test add end//////////////////////////////////
-
-////////////////////////////test remove////////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(6,sIdentifier);
-    var authRestriction=new AuthorizationRestriction(serviceRestriction);
-    var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestriction);
-    var auth2=new Authorization;
-    auth2.removeAuthorisationRestriction(removeAuth);
-/////////////////////////test remove end//////////////////////////////////
-////////////////////////////test isAuthorized ////////////////////////////////////
-
-var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
-var serviceRestriction=new ServiceRestriction(2,sIdentifier);
-//var buzzspace = new BuzzSpace("3",true,"COS301");
-var authRestriction=new isAuthorizedRequest("u12345678", serviceRestriction, "COS301");
-
-////////////////////////////test isAuthorized ////////////////////////////////////
-*/
-    mongoose.connection.close();
-};
 ///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
 UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
@@ -272,7 +230,6 @@ var AuthorizationRestriction=function(serviceRestriction,moduleID,roleName)//use
     this.ServiceRestriction=serviceRestriction;
 };
 AuthorizationRestriction.prototype.setServiceRestriction=function(ServiceRestriction)
-
 {
     this.ServiceRestriction=ServiceRestriction;
 };
@@ -281,9 +238,6 @@ AuthorizationRestriction.prototype.getServiceRestriction=function()
     return this.ServiceRestriction;
 };
 
-{
-    this.ServiceRestriction=ServiceRestriction;
-};
 AuthorizationRestriction.prototype.getServiceRestriction=function()
 {
     return this.ServiceRestriction;
@@ -434,7 +388,7 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
             }
         }); // end db.open
     };
-}
+};
 //***********************************end of getAuthorizationRestrictions************************************//
 
 
@@ -449,67 +403,69 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
  */
 // Has to be removed it is just for testing  
 //*********************************************************************
-/*var BuzzSpace = function(studentAcademicYear, _isOpen, studentModuleid)
-{
-  var academicYear;
-  var isOpen;
-  var moduleid;
-  
-  this.academicYear = studentAcademicYear;
-  this.isOpen = _isOpen;
-  this.moduleid = studentModuleid;
-};
 
-BuzzSpace.prototype.getAcademicYear =function()
+var buzzSpaces=function()
 {
-    return this.academicYear;
-};
 
-BuzzSpace.prototype.getIsOpen =function()
-{
-    return this.isOpen;
 };
-
-BuzzSpace.prototype.getModuleID =function()
+buzzSpaces.prototype.getUsersRole = function(getUsersRoleRequest)
 {
-    return this.moduleid;
+    return new getUsersRoleResult("Student");
 };
-*/
-var getUsersRolesForModule = function(usersRolesForModuleRequest)
+var getUsersRoleRequest=function(uID)
 {
-  var roleForModule;
-  this.rolesForModule = "guest";
-  this.roleModuleRequest = usersRolesForModuleRequest;
-}
-
-getUsersRolesForModule.prototype.getUsersRoleRequestObject =function()
-{
-    return this.roleModuleRequest;
+    var userID=uID;
 };
-
-getUsersRolesForModule.prototype.getRolesForModule =function()
+var getUsersRoleResult=function(role)
 {
-    return this.rolesForModule;
+    var role;
+    role= role;
+};
+getUsersRoleResult.prototype.getUserRole=function()
+{
+  return "Student";
+};
+buzzSpaces.prototype.getProfile = function(getProfileRequest)
+{
+  var profile;
+  profile=new Profile(getProfileRequest.getUserID(),"COS 301")
+    return profile;
 };
 
 
-var GetUsersRolesForModuleRequest = function(userId, moduleId)
-{
-  var userid;
-  var moduleid;
-  this.userid = userId;
-  this.moduleid = moduleId;
-}
 
-GetUsersRolesForModuleRequest.prototype.getUserID =function()
+var GetProfileRequest = function(userID)
 {
-    return this.userid;
+  var userId;
+  this.userId = userId;
+};
+GetProfileRequest.prototype.getUserID= function () {
+  return this.userId
+};
+var Profile=function(userID,moduleID)
+{
+  var userID;
+    this.userID=userID;
+    var moduleID;
+    this.moduleID=moduleID;
+};
+Profile.prototype.getUserID=function()
+{
+    return this.userID;
+};
+Profile.prototype.getModuleID=function()
+{
+    return this.moduleID;
 };
 
-GetUsersRolesForModuleRequest.prototype.getModuleID =function()
-{
-    return this.moduleid;
+var Status=function() {
+
 };
+Status.prototype.getStatusForProfile=function(UID)
+{
+  return 2;
+};
+
 //*********************************************************************
 //END DUMMY FUNCTIONS
 
@@ -526,44 +482,40 @@ GetUsersRolesForModuleRequest.prototype.getModuleID =function()
 /*
  * isAuthorizedRequest:
  * 	@param userid
- *	@param serviceIdentifierOject: ServiceIdentifier object
- * 	@param moduleID: String 
+ *	@param serviceIdentifier: ServiceIdentifier object
  */
-var isAuthorizedRequest = function(userID, theServiceRestrictionObject, moduleID)
+var isAuthorizedRequest;
+isAuthorizedRequest= function(userID, ServiceIdentifier)
 {
-  var userid;
-  var serviceRestrictionOject;
-  var moduleid;
+  var userId;
+  var serviceIdentifier;
   
-  this.userid = userID;
-  this.serviceRestrictionOject = theServiceRestrictionObject;
-  this.moduleid = moduleID;
+  this.userId = userID;
+  this.serviceIdentifier = ServiceIdentifier;
 };
 
 isAuthorizedRequest.prototype.getUserID =function()
 {
-    return this.userid;
+    return this.userId;
 };
-isAuthorizedRequest.prototype.getisAuthorizedRequestServiceRestrictionOject=function()
+isAuthorizedRequest.prototype.getisAuthorizedRequestServiceIdentifier=function()
 {
-    return this.serviceRestrictionOject;
+    return this.serviceIdentifier;
 };
 
-isAuthorizedRequest.prototype.setServiceRestrictionObject=function(servicerestrictionUpdate)
+isAuthorizedRequest.prototype.setServiceIdentifier=function(ServiceIdentifier)
 {
-    this.serviceRestrictionOject = servicerestrictionUpdate;
+    this.ServiceIdentifier = ServiceIdentifier;
 };
-
-isAuthorizedRequest.prototype.getModuleID = function()
+var isAuthorizedResult = function(isAuth)
 {
-  return this.moduleid;
+    var isAuthorized;
+    isAuthorized=isAuth;
 };
-
-isAuthorizedRequest.prototype.setModuleID = function(moduleID)
+isAuthorizedResult.prototype.getIsAuthorized=function()
 {
-   this.moduleid = moduleID;
+  return this.isAuthorized;
 };
-
 /*
  * isAuthorized connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise, it also checks
@@ -577,70 +529,60 @@ isAuthorizedRequest.prototype.setModuleID = function(moduleID)
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
             if(isauthorizedRequest != null)          
-            {				
-            		var boolisAuthorized = false;
-			var getStatusProfilevalue;
+            {
+                var boolisAuthorized = false;
 			var mongoose;
 			var AuthorizationRestrictionsMethodName;
 			var authSchema;
 			var auth;
 			var role;
-			
-			var lectureRole = "lecture";
-			var teachingAssistantRole = "teachingAssistant";
-			var studentRole = "student";
-			var guestRole = "guest";
-			
-			
-			
-			AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceRestrictionOject().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName();
+			AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
 	
 			
 			mongoose= require('mongoose');
-			authSchema = new mongoose.Schema({
-			    methodName: String,
-			    StatusPoints: String
-			}, {collection: 'Authorization'});
+                var authSchema = new mongoose.Schema({
+                    methodName: String,
+                    moduleID: String,
+                    roleName: String,
+                    StatusPoints: Number
+                }, {collection: 'Authorization'});
 			
 			/*
 			 * Fetch user roles for a specific student and module
 			 */
-			var roleRequest = new GetUsersRolesForModuleRequest(isauthorizedRequest.getUserID(),isauthorizedRequest.getModuleID());
-			role = new getUsersRolesForModule(roleRequest);
-			
-			if(guestRole == role.getRolesForModule())
-			{
-			  return false;
-			}
-			
-			if(lectureRole == role.getRolesForModule() || teachingAssistantRole == role.getRolesForModule())
-			{
-			  return true;
-			}
+                var buzzSpace=new buzzSpaces();
+                var ProfileRequest=new GetProfileRequest(isauthorizedRequest.getUserID());
+                var roleRequest=new getUsersRoleRequest(isauthorizedRequest.getUserID());
+                var module=buzzSpace.getProfile(ProfileRequest).getModuleID();
+                role=buzzSpace.getUsersRole(roleRequest).getUserRole();
+                // checks if it is the first time accesing the database
+                if(mongoose.models.Authorization) {
+                    auth = mongoose.model('Authorization');
+                }else {
+                    auth = mongoose.model('Authorization', authSchema);
+                }
 	
-			
-			auth = mongoose.model('Authorization', authSchema);
-	
-			auth.findOne({"methodName": AuthorizationRestrictionsMethodName},function (err, doc){
-				if (err) 
+			auth.findOne({"methodName": (AuthorizationRestrictionsMethodName) ,"moduleID": (module) ,"roleName": (role) },function (err, doc){
+				if (err)
 				{
-				    console.log("Method name not found");
+				    console.log("Entry not found");
 				}
-				else 
+				else
 				{
 					console.log("Connection success...");
-	
+
 					      if(doc != null)
 					      {
 						    var point = parseInt(doc.StatusPoints)
 						    console.log(point);
 						    /*
-						    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter 
+						    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter
 						    * it is a userId.
 						    */
-						    getStatusProfilevalue = new getStatusForProfile(isauthorizedRequest.getUserID());
-				      
-						    if(getStatusProfilevalue > point)
+                              var status=new Status();
+						    var StatusProfilevalue = status.getStatusForProfile(isauthorizedRequest.getUserID());
+
+						    if(StatusProfilevalue >= point)
 						    {
 						      boolisAuthorized = true;
 						    }
@@ -653,16 +595,63 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 					      {
 						  boolisAuthorized = false;
 					      }
-	
+
 				      mongoose.connection.close();
-				    return boolisAuthorized;
+				    return new isAuthorizedResult(boolisAuthorized);
 				}
 			    });
 		}
-            return false;
+            return new isAuthorizedResult(false);
       
 };
       
  //#END isAuthorized -----------------------
+///////////////unit testing///////////////////////////
+Authorization.prototype.test=function()
+{
+    ////////////////////////////test Update////////////////////////////////////
+   var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+    var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
+    var auth=new Authorization;
+  //  auth.updateAuthorisationRestriction(updateAuth);
+/////////////////////////test Update end//////////////////////////////////
+
+//////////////////////////test isAuthorized////////////////////////////////
+    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
+    var auth0=new Authorization;
+    var res=auth0.isAuthorized(isAuthorizedReq);
+   // if (res.getIsAuthorized())
+   // {
+   //     console.log("yay");
+   // }
+   // else
+   // {
+   //     console.log("boo");
+   // }
+///////////////////////// test isAuthorized end
+    /*
+     ////////////////////////////test add////////////////////////////////////
+     var sIdentifier=new ServiceIdentifier("Authorization","addAuthorizationRestriction");
+     var serviceRestriction=new ServiceRestriction(4,sIdentifier);
+     var authRestriction=new AuthorizationRestriction(serviceRestriction);
+     var addAuth=new AddAuthorizationRestrictionRequest("u13397134",authRestriction);
+     var auth1=new Authorization;
+     auth1.addAuthorisationRestriction(addAuth);
+     /////////////////////////test add end//////////////////////////////////
+
+     ////////////////////////////test remove////////////////////////////////////
+     var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
+     var serviceRestriction=new ServiceRestriction(6,sIdentifier);
+     var authRestriction=new AuthorizationRestriction(serviceRestriction);
+     var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestriction);
+     var auth2=new Authorization;
+     auth2.removeAuthorisationRestriction(removeAuth);
+     /////////////////////////test remove end//////////////////////////////////
+     */
+    //mongoose.connection.close();
+};
 var a=new Authorization;
 a.test();
