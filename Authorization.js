@@ -532,7 +532,7 @@ isAuthorizedResult.prototype.getIsAuthorized=function()
 
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
-            if(isauthorizedRbuzzSpaceequest != null)          
+            if(isauthorizedRequest != null)          
             {
                 var boolisAuthorized = false;
 			var mongoose;
