@@ -128,15 +128,19 @@ var RemoveAuthorizationRestrictionsResult=function()
 
 Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
-        RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-        var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
-        console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
-        b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
+	try	{
+        	RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+        	var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
+        	console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
+        	b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
 
-        //var uRestriction = new Authorization();
-        this.updateAuthorisationRestriction(b);
-    //return new RemoveAuthorizationRestrictionsResult();
-   // the spec says that there is no need to return anything for remove
+	        //var uRestriction = new Authorization();
+	        this.updateAuthorisationRestriction(b);
+	    //return new RemoveAuthorizationRestrictionsResult();
+	   // the spec says that there is no need to return anything for remove
+	}catch(err){
+		throw err("Not Authorized exception");
+	}
 };
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 var RemoveAuthorizationRestrictionsResult;
