@@ -514,7 +514,7 @@ isAuthorizedRequest.prototype.setServiceIdentifier=function(ServiceIdentifier)
 var isAuthorizedResult = function(isAuth)
 {
     var isAuthorized;
-    isAuthorized=isAuth;
+    this.isAuthorized=isAuth;
 };
 isAuthorizedResult.prototype.getIsAuthorized=function()
 {
