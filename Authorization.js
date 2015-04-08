@@ -534,7 +534,8 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
             if(isauthorizedRequest != null)          
             {
-                var boolisAuthorized = false;
+            		var boolisAuthorized;
+                	this.boolisAuthorized = false;
 			var mongoose;
 			var AuthorizationRestrictionsMethodName;
 			var authSchema;
@@ -588,24 +589,24 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
 						    if(StatusProfilevalue >= point)
 						    {
-						      boolisAuthorized = true;
+						      this.boolisAuthorized = true;
 						    }
 						    else
 						    {
-						      boolisAuthorized = false;
+						      this.boolisAuthorized = false;
 						    }
 					      }
 					      else
 					      {
-						  boolisAuthorized = false;
+						  this.boolisAuthorized = false;
 					      }
 
 				      mongoose.connection.close();
-				    return new isAuthorizedResult(boolisAuthorized);
+				    return new isAuthorizedResult(this.boolisAuthorized);
 				}
 			    });
 		}
-            return new isAuthorizedResult(false);
+            return new isAuthorizedResult(this.boolisAuthorized);
       
 };
       
