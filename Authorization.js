@@ -394,7 +394,7 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
  //#START isAuthorized
 /*
  * isAuthorizedRequest:
- * 	@param userid
+ * 	@param useri: string
  *	@param serviceIdentifier: ServiceIdentifier object
  */
 var isAuthorizedRequest;
@@ -429,15 +429,10 @@ var isAuthorizedResult = function(isAuth)
     var isAuthorized;
     this.isAuthorized=isAuth;
 };
+
 isAuthorizedResult.prototype.getIsAuthorized=function()
 {
   return this.isAuthorized;
-};
-
-
-isAuthorizedResult.prototype.setisAuthorized = function(value)
-{
-  this.isAuthorized = value;
 };
 
 
@@ -455,15 +450,15 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
             if(isauthorizedRequest != null)          
             {
-			var mongoose;
-			var AuthorizationRestrictionsMethodName;
-			var authSchema;
-			var auth;
-			var role;
-			AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
+		var mongoose;
+		var AuthorizationRestrictionsMethodName;
+		var authSchema;
+		var auth;
+		var role;
+		AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
 	
 			
-			mongoose= require('mongoose');
+		mongoose= require('mongoose');
                 var authSchema = new mongoose.Schema({
                     methodName: String,
                     moduleID: String,
@@ -535,59 +530,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
 
 
-///////////////unit testing///////////////////////////
-Authorization.prototype.test=function()
-{
-    ///////
-//var auth=new Authorization;
-//var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
-//var serviceRestriction=new ServiceRestriction(2,sIdentifier);
-//var authRestriction=new AuthorizationRestriction(serviceRestriction);
-//getAuthorizationRestriction(authRestriction);
-    ////////////////////////////test Update////////////////////////////////////
-   var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(2,sIdentifier);
-    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
-    var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
-    var auth=new Authorization;
-  //  auth.updateAuthorisationRestriction(updateAuth);
-/////////////////////////test Update end//////////////////////////////////
 
-//////////////////////////test isAuthorized////////////////////////////////
-    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
-    var auth0=new Authorization;
-    var res=auth0.isAuthorized(isAuthorizedReq);
-   // if (res.getIsAuthorized())
-   // {
-   //     console.log("yay");
-   // }
-   // else
-   // {
-   //     console.log("boo");
-   // }
-///////////////////////// test isAuthorized end
-    /*
-     ////////////////////////////test add////////////////////////////////////
-     var sIdentifier=new ServiceIdentifier("Authorization","addAuthorizationRestriction");
-     var serviceRestriction=new ServiceRestriction(4,sIdentifier);
-     var authRestriction=new AuthorizationRestriction(serviceRestriction);
-     var addAuth=new AddAuthorizationRestrictionRequest("u13397134",authRestriction);
-     var auth1=new Authorization;
-     auth1.addAuthorisationRestriction(addAuth);
-     /////////////////////////test add end//////////////////////////////////
-
-     ////////////////////////////test remove////////////////////////////////////
-     var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
-     var serviceRestriction=new ServiceRestriction(6,sIdentifier);
-     var authRestriction=new AuthorizationRestriction(serviceRestriction);
-     var removeAuth=new RemoveAuthorizationRestrictionRequest("u1223O83O",authRestriction);
-     var auth2=new Authorization;
-     auth2.removeAuthorisationRestriction(removeAuth);
-     /////////////////////////test remove end//////////////////////////////////
-     */
-    //mongoose.connection.close();
-};
 //DUMMY BUZZSPACE HAS TO BE REMOVED BEFORE INTERGRATION
 /*
  * @param studentAcademicYear
@@ -663,7 +606,29 @@ Status.prototype.getStatusForProfile=function(UID)
 };
 
 //*********************************************************************
-//END DUMMY FUNCTIONS
+
+///////////////unit testing///////////////////////////
+Authorization.prototype.test=function()
+{
+
+    ////////////////////////////test Update////////////////////////////////////
+   var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+    var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
+    var auth=new Authorization;
+/////////////////////////test Update end//////////////////////////////////
+
+//////////////////////////test isAuthorized////////////////////////////////
+    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
+    var auth0=new Authorization;
+    var res=auth0.isAuthorized(isAuthorizedReq);
+};
+
 
 var a=new Authorization;
 a.test();
+
+
+//END DUMMY FUNCTIONS
