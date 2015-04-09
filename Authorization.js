@@ -388,10 +388,7 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
 
 
 
-/*
- * class buzzAuthorization has a function prototype called isAuthorized.
- */
- //#START isAuthorized
+//#START isAuthorized
 /*
  * isAuthorizedRequest:
  * 	@param useri: string
