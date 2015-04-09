@@ -1,15 +1,18 @@
 How to call isAuthorized:
- It receives an isAuthorizedRequest which takes in three parameters a userID, theServiceRestrictionObject 
- and moduleID of type string.
- var isAuthorizedRequest = function(userID, theServiceRestrictionObject, moduleID)
- {
-   var userid;
-   var serviceIdentifierOject;
-   var moduleid;
-   
-   this.userid = userID;
-   this.serviceIdentifierOject = theServiceRestrictionObject;
-   this.moduleid = moduleID;
- };
+ It receives an isAuthorizedRequest which takes in two parameters a userID and ServiceIdentifier object.
+ /*
+ * isAuthorizedRequest:
+ * 	@param userid
+ *	@param serviceIdentifier: ServiceIdentifier object
+ */
+var isAuthorizedRequest;
+isAuthorizedRequest= function(userID, ServiceIdentifier)
+{
+  var userId;
+  var serviceIdentifier;
+  
+  this.userId = userID;
+  this.serviceIdentifier = ServiceIdentifier;
+};
 
 Then this isAuthorizedRequest object is passed in isAuthorized.
