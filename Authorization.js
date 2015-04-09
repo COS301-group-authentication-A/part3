@@ -2,12 +2,15 @@
 var connect = require('./connect.js');//to connect to the database
 var Authorization;
 var mongoose;
-Authorization = function () {//Authorization class
+
+Authorization = function () {
 
 };
 
-
-Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
+/**updateAuthorizationRestriction that updates the Restriction in the Database
+ * @param UpdateAuthReq -an UpdateAuthorizationRestrictionRequest object
+ */
+Authorization.prototype.updateAuthorizationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
     mongoose= require('mongoose');
     //createing the schema
@@ -33,7 +36,7 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
                     "StatusPoints": UpdateAuthReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints()
                 }
             },
-            function (err, doc) {
+            function (err) {
                 if (err) {
                     console.log("Entry not found");
                     return null;
@@ -43,8 +46,13 @@ Authorization.prototype.updateAuthorisationRestriction=function(UpdateAuthReq)//
             });
 };
 
-///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
+/**UpdateAuthorizationRestrictionRequest class that is passed through to updateAuthorizationRestriction
+ *
+ * @param userID - A string containing the userID of that person
+ * @param AuthorizationRestriction - An AuthorizationRestriction object
+ * @constructor
+ */
 UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
 {
     var userID;
@@ -52,36 +60,31 @@ UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
     var AuthorizationRestriction;
     this.AuthorizationRestriction=AuthorizationRestriction;
 };
+/**Gets the userID from the internal veriable*/
 UpdateAuthorizationRestrictionRequest.prototype.getUserID=function()
 {
     return this.userID;
 };
-UpdateAuthorizationRestrictionRequest.prototype.setUserID=function(userID)
-{
-    this.userID=userID;
-};
-UpdateAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(AuthorizationRestriction)
-{
-    this.AuthorizationRestriction=AuthorizationRestriction;
-};
+/**Gets the AuthorizationRestriction from the internal veriable*/
 UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
 {
     return this.AuthorizationRestriction;
 };
-//////////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////////
-///////////////////////////////Update Authorisation restriction result class and functions///////////////////////////////////////////////////
+/**UpdateAuthorizationRestrictionsResult class
+ *
+ * @param AuthorizationRestriction - an AuthorizationRestriction object
+ * @constructor
+ */
 var UpdateAuthorizationRestrictionsResult=function(AuthorizationRestriction)
 {
     var  AuthorizationRestriction;
     this.AuthorizationRestriction=AuthorizationRestriction;
 };
+/**Gets the AuthorizationRestriction from the internal veriable*/
 UpdateAuthorizationRestrictionsResult.prototype,getAuthorizationRestriction=function()
 {
     return this.AuthorizationRestriction;
 };
-///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
-
-
 ///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
 var UpdateAuthorizationRestrictionRequest;
 UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
@@ -229,7 +232,13 @@ var UpdateAuthorizationRestrictionsResult=function()
 };
 //////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////////////////
 
-///////////////////////////////Authorisation restriction class and functions///////////////////////////////////////////////////
+/**AuthorizationRestriction class
+ *
+ * @param serviceRestriction - A serviceRestriction object
+ * @param moduleID - A moduleID passed as a String
+ * @param roleName - A roleName passed as a string
+ * @constructor
+ */
 var AuthorizationRestriction=function(serviceRestriction,moduleID,roleName)//used by everyone
 {
     var moduleID;
@@ -239,29 +248,27 @@ var AuthorizationRestriction=function(serviceRestriction,moduleID,roleName)//use
     var ServiceRestriction;
     this.ServiceRestriction=serviceRestriction;
 };
-AuthorizationRestriction.prototype.setServiceRestriction=function(ServiceRestriction)
-{
-    this.ServiceRestriction=ServiceRestriction;
-};
+/** Returns the internal ServiceRestriction*/
 AuthorizationRestriction.prototype.getServiceRestriction=function()
 {
     return this.ServiceRestriction;
 };
-
-AuthorizationRestriction.prototype.getServiceRestriction=function()
-{
-    return this.ServiceRestriction;
-};
+/**Returns the module ID*/
 AuthorizationRestriction.prototype.getModuleID=function()
 {
     return this.moduleID;
 };
+/**Returns the Role Name*/
 AuthorizationRestriction.prototype.getRoleName=function()
 {
     return this.roleName;
 };
-///////////////////////////////End of Authorisation restriction class and functions///////////////////////////////////////////////////
-///////////////////////////////Service restriction class and functions///////////////////////////////////////////////////
+/**ServiceRestriction class
+ *
+ * @param minimumStatusPoints - status points to update too or to add
+ * @param serviceIdentifier - A serviceIdentifier object
+ * @constructor
+ */
 var ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by everyone
 {
     var minimumStatusPoints;
@@ -269,28 +276,20 @@ var ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by 
     var ServiceIdentifier;
     this.ServiceIdentifier=serviceIdentifier;
 };
-ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
-{
-    this.minimumStatusPoints=minimumStatusPoints;
-};
-ServiceRestriction.prototype.setServiceRestrictionStatusPoints=function(minimumStatusPoints)
-{
-    this.minimumStatusPoints=minimumStatusPoints;
-};
-
-ServiceRestriction.prototype.setServiceRestrictionServiceIdentifier=function(serviceIdentifier)
-{
-    this.ServiceIdentifier=serviceIdentifier;
-};
-
+/**Returns the internal Status points*/
 ServiceRestriction.prototype.getServiceRestrictionMinimumStatusPoints=function() {
     return this.minimumStatusPoints;
 };
+/**Returns the internal ServiceIdentifier object*/
 ServiceRestriction.prototype.getServiceRestrictionServiceIdentifier=function() {
     return this.ServiceIdentifier;
 };
-///////////////////////////////End of Service restriction class and functions///////////////////////////////////////////////////
-///////////////////////////////Service Identifier class and functions///////////////////////////////////////////////////
+/**ServiceIdentifier class
+ *
+ * @param fullyQualifiedInterfaceName - The name of the section as a String
+ * @param methodName - The name of the function as a String
+ * @constructor
+ */
 var ServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)//used by everyone
 {
     var fullyQualifiedInterfaceName;
@@ -298,31 +297,16 @@ var ServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)//used by 
     this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
     this.methodName=methodName;
 };
-ServiceIdentifier.prototype.setServiceIdentifierMethodName=function(methodName)
-{
-    this.methodName=methodName;
-};
-ServiceIdentifier.prototype.setServiceIdentifierInterfaceName=function(fullyQualifiedInterfaceName)
-{
-    this.fullyQualifiedInterfaceName=fullyQualifiedInterfaceName;
-};
+/** returns the internal Method Name*/
 ServiceIdentifier.prototype.getServiceIdentifierMethodName=function()
 {
     return this.methodName;
 };
+/**returns the InterfaceName*/
 ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 {
     return this.fullyQualifiedInterfaceName;
 };
-///////////////////////////////End of Service Identifier class and functions//////////////////////////////////////////////////
-
-///////
-//var auth=new Authorization;
-//var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
-//var serviceRestriction=new ServiceRestriction(2,sIdentifier);
-//var authRestriction=new AuthorizationRestriction(serviceRestriction);
-//getAuthorizationRestriction(authRestriction);
-
 //**************************getAuthorizationRestriction***************************//
 
 Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationReq)
@@ -402,93 +386,12 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
 //***********************************end of getAuthorizationRestrictions************************************//
 
 
-//DUMMY BUZZSPACE HAS TO BE REMOVED BEFORE INTERGRATION
-/*
- * @param studentAcademicYear
- * 	it is the academic year of the student
- * @param isOpen
- * 	boolean value
- * @param studentModuleid
- * 	e.g COS330 
- */
-// Has to be removed it is just for testing  
-//*********************************************************************
-
-var buzzSpaces=function()
-{
-
-};
-buzzSpaces.prototype.getUsersRole = function(getUsersRoleRequest)
-{
-    return new getUsersRoleResult("Student");
-};
-var getUsersRoleRequest=function(uID)
-{
-    var userID=uID;
-};
-var getUsersRoleResult=function(role)
-{
-    var role;
-    role= role;
-};
-getUsersRoleResult.prototype.getUserRole=function()
-{
-  return "Student";
-};
-buzzSpaces.prototype.getProfile = function(getProfileRequest)
-{
-  var profile;
-  profile=new Profile(getProfileRequest.getUserID(),"COS 301")
-    return profile;
-};
-
-
-
-var GetProfileRequest = function(userID)
-{
-  var userId;
-  this.userId = userId;
-};
-GetProfileRequest.prototype.getUserID= function () {
-  return this.userId
-};
-var Profile=function(userID,moduleID)
-{
-  var userID;
-    this.userID=userID;
-    var moduleID;
-    this.moduleID=moduleID;
-};
-Profile.prototype.getUserID=function()
-{
-    return this.userID;
-};
-Profile.prototype.getModuleID=function()
-{
-    return this.moduleID;
-};
-
-var Status=function() {
-
-};
-Status.prototype.getStatusForProfile=function(UID)
-{
-  return 2;
-};
-
-//*********************************************************************
-//END DUMMY FUNCTIONS
 
 
 /*
  * class buzzAuthorization has a function prototype called isAuthorized.
  */
  //#START isAuthorized
-//buzzAuthorization = function(){
-  
-//};
-
-
 /*
  * isAuthorizedRequest:
  * 	@param userid
@@ -620,6 +523,12 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 ///////////////unit testing///////////////////////////
 Authorization.prototype.test=function()
 {
+    ///////
+//var auth=new Authorization;
+//var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorisationRestriction");
+//var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+//var authRestriction=new AuthorizationRestriction(serviceRestriction);
+//getAuthorizationRestriction(authRestriction);
     ////////////////////////////test Update////////////////////////////////////
    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
     var serviceRestriction=new ServiceRestriction(2,sIdentifier);
@@ -664,5 +573,82 @@ Authorization.prototype.test=function()
      */
     //mongoose.connection.close();
 };
+//DUMMY BUZZSPACE HAS TO BE REMOVED BEFORE INTERGRATION
+/*
+ * @param studentAcademicYear
+ * 	it is the academic year of the student
+ * @param isOpen
+ * 	boolean value
+ * @param studentModuleid
+ * 	e.g COS330
+ */
+// Has to be removed it is just for testing
+//*********************************************************************
+
+var buzzSpaces=function()
+{
+
+};
+buzzSpaces.prototype.getUsersRole = function(getUsersRoleRequest)
+{
+    return new getUsersRoleResult("Student");
+};
+var getUsersRoleRequest=function(uID)
+{
+    var userID=uID;
+};
+var getUsersRoleResult=function(role)
+{
+    var role;
+    role= role;
+};
+getUsersRoleResult.prototype.getUserRole=function()
+{
+    return "Student";
+};
+buzzSpaces.prototype.getProfile = function(getProfileRequest)
+{
+    var profile;
+    profile=new Profile(getProfileRequest.getUserID(),"COS 301")
+    return profile;
+};
+
+
+
+var GetProfileRequest = function(userID)
+{
+    var userId;
+    this.userId = userId;
+};
+GetProfileRequest.prototype.getUserID= function () {
+    return this.userId
+};
+var Profile=function(userID,moduleID)
+{
+    var userID;
+    this.userID=userID;
+    var moduleID;
+    this.moduleID=moduleID;
+};
+Profile.prototype.getUserID=function()
+{
+    return this.userID;
+};
+Profile.prototype.getModuleID=function()
+{
+    return this.moduleID;
+};
+
+var Status=function() {
+
+};
+Status.prototype.getStatusForProfile=function(UID)
+{
+    return 2;
+};
+
+//*********************************************************************
+//END DUMMY FUNCTIONS
+
 var a=new Authorization;
 a.test();
