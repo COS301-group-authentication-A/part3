@@ -1,3 +1,4 @@
+/*NOTE: This is the file your run first using 'node GUIbuzzAuthorizationServer.js' in order to view the GUI on application software*/
 var http = require("http");
 var buzzAuthorizationClasses = require("./GUIbuzzAuthorizationClasses");
 
@@ -27,12 +28,12 @@ http.createServer(function(request, response)
             +"<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css'>"
             +"<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>"
             +"<script> function addRestriction(){alert('Restriction added!')};"
-            +"function removeRestriction(){alert('Restriction removed!')};"
-            +"function updateRestriction(){alert('Restriction updated!')};"
-            +"function selectedRestriction(option){"
-            +"var val = option.options[option.selectedIndex].value;"
-            +"document.getElementsByTagId('exampleInputEmail3')[0].setAttribute('placeholder', 'ok');"
-            +"};"
+                    +"function removeRestriction(){alert('Restriction removed!')};"
+                    +"function updateRestriction(){alert('Restriction updated!')};"
+                    +"function selectedRestriction(option){"
+                        +"var val = option.options[option.selectedIndex].value;"
+                        +"alert(val);"
+                    +"};"
             +"</script>"
             +"</head>"
             +"<body>"
