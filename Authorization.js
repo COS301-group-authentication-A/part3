@@ -429,6 +429,14 @@ isAuthorizedResult.prototype.getIsAuthorized=function()
 {
   return this.isAuthorized;
 };
+
+
+isAuthorizedResult.prototype.setisAuthorized = function(value)
+{
+  this.isAuthorized = value;
+};
+
+
 /*
  * isAuthorized connects to the database compares status poits from status and returns true if
  * the status point in Buzz is less than that retrieved from status false otherwise, it also checks
@@ -441,10 +449,15 @@ isAuthorizedResult.prototype.getIsAuthorized=function()
 
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
+	    var boolisAuthorized;
+	    var results;
+	    
+	    this.boolisAuthorized = false;
+	    this.results = new isAuthorizedResult(false);
+	    this.results.setisAuthorized(false);
+	
             if(isauthorizedRequest != null)          
             {
-            		var boolisAuthorized;
-                	this.boolisAuthorized = false;
 			var mongoose;
 			var AuthorizationRestrictionsMethodName;
 			var authSchema;
@@ -461,18 +474,23 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
                     StatusPoints: Number
                 }, {collection: 'Authorization'});
 			
-			/*
-			 * Fetch user roles for a specific student and module
-			 */
+		/*
+		 * Create a new buzzSpace object, ProfileRequest object, roleRequest object and get
+		 * the module.
+		 */
                 var buzzSpace=new buzzSpaces();
                 var ProfileRequest=new GetProfileRequest(isauthorizedRequest.getUserID());
                 var roleRequest=new getUsersRoleRequest(isauthorizedRequest.getUserID());
                 var module=buzzSpace.getProfile(ProfileRequest).getModuleID();
                 role=buzzSpace.getUsersRole(roleRequest).getUserRole();
+                
                 // checks if it is the first time accesing the database
-                if(mongoose.models.Authorization) {
+                if(mongoose.models.Authorization) 
+                {
                     auth = mongoose.model('Authorization');
-                }else {
+                }
+                else
+                {
                     auth = mongoose.model('Authorization', authSchema);
                 }
 	
@@ -483,17 +501,16 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 				}
 				else
 				{
+					this.results = new isAuthorizedResult(false);
+
 					console.log("Connection success...");
 
 					      if(doc != null)
 					      {
 						    var point = parseInt(doc.StatusPoints)
 						    console.log(point);
-						    /*
-						    * call getStatusForProfile from status and parse in the isAuthorizedRequest as a parameter
-						    * it is a userId.
-						    */
-                              var status=new Status();
+
+                              			    var status=new Status();
 						    var StatusProfilevalue = status.getStatusForProfile(isauthorizedRequest.getUserID());
 
 						    if(StatusProfilevalue >= point)
@@ -509,13 +526,13 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 					      {
 						  this.boolisAuthorized = false;
 					      }
-
+						this.results.setisAuthorized(this.boolisAuthorized);
 				      mongoose.connection.close();
-				    return new isAuthorizedResult(this.boolisAuthorized);
+				    return results;
 				}
 			    });
 		}
-            return new isAuthorizedResult(this.boolisAuthorized);
+            return results;
       
 };
       
