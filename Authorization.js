@@ -494,17 +494,15 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 			auth.findOne({"methodName": (AuthorizationRestrictionsMethodName) ,"moduleID": (module) ,"roleName": (role) },function (err, doc){
 				if (err)
 				{
-				    console.log("Entry not found");
+				    throw err("Entry not found");
 				}
 				else
 				{
 
-					console.log("Connection success...");
 
 					      if(doc != null)
 					      {
 						    var point = parseInt(doc.StatusPoints)
-						    console.log(point);
 
                               			    var status=new Status();
 						    var StatusProfilevalue = status.getStatusForProfile(isauthorizedRequest.getUserID());
