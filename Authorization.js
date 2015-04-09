@@ -450,12 +450,9 @@ isAuthorizedResult.prototype.setisAuthorized = function(value)
 Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 {
 	    var boolisAuthorized;
-	    var results;
-	    
+
 	    this.boolisAuthorized = false;
-	    this.results = new isAuthorizedResult(false);
-	    this.results.setisAuthorized(false);
-	
+
             if(isauthorizedRequest != null)          
             {
 			var mongoose;
@@ -501,7 +498,6 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 				}
 				else
 				{
-					this.results = new isAuthorizedResult(false);
 
 					console.log("Connection success...");
 
@@ -526,13 +522,13 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 					      {
 						  this.boolisAuthorized = false;
 					      }
-						this.results.setisAuthorized(this.boolisAuthorized);
+
 				      mongoose.connection.close();
-				    return results;
+				    return new isAuthorizedResult(this.boolisAuthorized);
 				}
 			    });
 		}
-            return results;
+            return new isAuthorizedResult(this.boolisAuthorized);
       
 };
       
