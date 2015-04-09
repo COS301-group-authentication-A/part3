@@ -407,19 +407,23 @@ isAuthorizedRequest= function(userID, ServiceIdentifier)
   this.serviceIdentifier = ServiceIdentifier;
 };
 
+//returns the userId
 isAuthorizedRequest.prototype.getUserID =function()
 {
     return this.userId;
 };
+
+//returns serviceIdentifier object
 isAuthorizedRequest.prototype.getisAuthorizedRequestServiceIdentifier=function()
 {
     return this.serviceIdentifier;
 };
 
-isAuthorizedRequest.prototype.setServiceIdentifier=function(ServiceIdentifier)
-{
-    this.ServiceIdentifier = ServiceIdentifier;
-};
+
+/* isAuthorizedResult class
+ *  @param isAuth - boolean virable 
+ *
+ */
 var isAuthorizedResult = function(isAuth)
 {
     var isAuthorized;
@@ -438,12 +442,8 @@ isAuthorizedResult.prototype.setisAuthorized = function(value)
 
 
 /*
- * isAuthorized connects to the database compares status poits from status and returns true if
- * the status point in Buzz is less than that retrieved from status false otherwise, it also checks
- * the user roles (student, lecture ...) for a module and based on that true or false is returned.
- * 
- * isAuthorized receieve and object of isAuthorizedrequest which has an object of service restriction
- * and a userid and a buzz space object..
+ * isAuthorized class
+ *
  * @param isauthorizedRequest: isAuthorizedRequest object
  */
 
@@ -530,7 +530,11 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
       
 };
       
- //#END isAuthorized -----------------------
+//#END isAuthorized 
+
+
+
+
 ///////////////unit testing///////////////////////////
 Authorization.prototype.test=function()
 {
