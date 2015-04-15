@@ -19,6 +19,11 @@ Authorization = function () {
  */
 Authorization.prototype.updateAuthorizationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
+    var buzzSpace=new buzzSpaces();
+    if(!buzzSpace.isAdministrator(UpdateAuthReq.getUserID()))
+    {
+        return new Error("notAuthorizedExeption");
+    }
     var auth;
     // checks if it is the first time accesing the database
     if(mongoose.models.Authorization) {
@@ -337,7 +342,7 @@ isAuthorizedRequest= function(userID, ServiceIdentifier)
 {
   var userId;
   var serviceIdentifier;
-  
+
   this.userId = userID;
   this.serviceIdentifier = ServiceIdentifier;
 };
@@ -356,7 +361,7 @@ isAuthorizedRequest.prototype.getisAuthorizedRequestServiceIdentifier=function()
 
 
 /* isAuthorizedResult class
- *  @param isAuth - boolean virable 
+ *  @param isAuth - boolean virable
  *
  */
 var isAuthorizedResult = function(isAuth)
@@ -383,24 +388,15 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
 	    this.boolisAuthorized = false;
 
-            if(isauthorizedRequest != null)          
+            if(isauthorizedRequest != null)
             {
-		var mongoose;
 		var AuthorizationRestrictionsMethodName;
 		var authSchema;
 		var auth;
 		var role;
 		AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
-	
-			
-		mongoose= require('mongoose');
-                var authSchema = new mongoose.Schema({
-                    methodName: String,
-                    moduleID: String,
-                    roleName: String,
-                    StatusPoints: Number
-                }, {collection: 'Authorization'});
-			
+
+
 		/*
 		 * Create a new buzzSpace object, ProfileRequest object, roleRequest object and get
 		 * the module.
@@ -410,9 +406,9 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
                 var roleRequest=new getUsersRoleRequest(isauthorizedRequest.getUserID());
                 var module=buzzSpace.getProfile(ProfileRequest).getModuleID();
                 role=buzzSpace.getUsersRole(roleRequest).getUserRole();
-                
+
                 // checks if it is the first time accesing the database
-                if(mongoose.models.Authorization) 
+                if(mongoose.models.Authorization)
                 {
                     auth = mongoose.model('Authorization');
                 }
@@ -420,11 +416,11 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
                 {
                     auth = mongoose.model('Authorization', authSchema);
                 }
-	
+
 			auth.findOne({"methodName": (AuthorizationRestrictionsMethodName) ,"moduleID": (module) ,"roleName": (role) },function (err, doc){
 				if (err)
 				{
-				    throw err("Entry not found");
+				    throw new Error("Entry not found");
 				}
 				else
 				{
@@ -457,10 +453,10 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 			    });
 		}
             return new isAuthorizedResult(this.boolisAuthorized);
-      
+
 };
-      
-//#END isAuthorized 
+
+//#END isAuthorized
 
 
 
@@ -505,7 +501,10 @@ buzzSpaces.prototype.getProfile = function(getProfileRequest)
     profile=new Profile(getProfileRequest.getUserID(),"COS 301")
     return profile;
 };
-
+buzzSpaces.prototype.isAdministrator=function(userID)
+{
+    return true;
+}
 
 
 var GetProfileRequest = function(userID)
@@ -548,7 +547,7 @@ Authorization.prototype.test=function()
 
     ////////////////////////////test Update////////////////////////////////////
    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+    var serviceRestriction=new ServiceRestriction(3,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
     var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
     var auth=new Authorization;
