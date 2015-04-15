@@ -273,85 +273,57 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 {
     return this.fullyQualifiedInterfaceName;
 };
-//**************************getAuthorizationRestriction***************************//
 
-Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationReq)
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%----GetAuthorizationRestrictions----%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationRequest)
 {
-    var mongo = require('mongodb'),
-        Server = mongo.Server,
-        Db = mongo.Db;
-    var server = new Server('45.55.154.156', 27017, {
-        auto_reconnect: true
-    });
-    var db = new Db('Buzz', server);
-    var onErr = function(err, callback) {
-        db.close();
-        callback(err);
-    };
+	var check;
+	
+	if(mongoose.models.Authorization) 
+	{
+		check = mongoose.model('Authorization');
+	}
+	else 
+	{
+		check = mongoose.model('Authorization', authSchema);
+	}
+	
+	check.find(
+	{
+		'methodName': getAuthorizationRequest.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()
+	},
+	function (err) 
+	{
+		if (err) 
+		{
+			console.log("Restriction not found");
+			return null;
+		} 
+		else 
+		{	console.log("Restriction found and being returned");
+			return new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());//take note of this getAutho...
+		}
+	});
+}
 
-    var getAuthorizationRestrictionRequest = getAuthorizationReq.getServiceRestriction().getServiceRestrictionServiceIdentifier();
-
-    this.getAuthorizationRestrictionResult(getAuthorizationRestrictionRequest, function(err, getAuthorizationRestrictionResult)
-    {
-        console.log(JSON.stringify(getAuthorizationRestrictionResult))
-    });
-
-    //getAuthorizationRestrictionResult
-    exports.getAuthorizationRestrictionResult = function(req, callback)
-    {
-        var stringToReturn = "";
-
-        db.open(function(err, db) {
-            if (!err) {
-                db.collection('Authorization', function(err, collection) {
-                    if (!err)
-                    {
-                        collection.find({
-                            'methodName': req//uncommenting this will return the specified restriction
-                        }).toArray(function(err, docs)
-                        {
-                            if (!err)
-                            {
-                                db.close();
-                                var intCount = docs.length;
-                                if (intCount > 0)
-                                {
-                                    var strJson = "";
-                                    for (var i = 0; i < intCount;)
-                                    {
-                                        strJson += '{"StatusPoints":"' + docs[i].StatusPoints + '"}'
-                                        i = i + 1;
-                                        if (i < intCount)
-                                        {
-                                            strJson += ',';
-                                        }
-                                    }
-                                    strJson = '{"methodName":"' + req + '","count":' + intCount + ',"Authorization":[' + strJson + "]}"
-                                    callback("", JSON.parse(strJson));
-                                }
-                            }
-                            else
-                            {
-                                onErr(err, callback);
-                            }
-                        }); //end collection.find
-                    }
-                    else
-                    {
-                        onErr(err, callback);
-                    }
-                }); //end db.collection
-            }
-            else
-            {
-                onErr(err, callback);
-            }
-        }); // end db.open
-    };
+//--GetAuthorizationRestrictionsResult and its helper functions--//
+var GetAuthorizationRestrictionsResult=function(AuthorizationRestriction)
+{
+    var  AuthorizationRestriction;
+    this.AuthorizationRestriction=AuthorizationRestriction;
 };
-//***********************************end of getAuthorizationRestrictions************************************//
 
-
+//--GetAuthorizationRestrictionRequest and its helper functions--//
+GetAuthorizationRestrictionRequest=function(AuthorizationRestriction)
+{
+    var AuthorizationRestriction;
+    this.AuthorizationRestriction=AuthorizationRestriction;
+};
+GetAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
+};
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 
 //#START isAuthorized
@@ -588,11 +560,20 @@ Authorization.prototype.test=function()
     var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
     var auth0=new Authorization;
     var res=auth0.isAuthorized(isAuthorizedReq);
-};
-
+//////////////////////////test isAuthorized end////////////////////////////////	
+	
+////////////////////////////test getAuth////////////////////////////////////
+var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+var updateAuth=new GetAuthorizationRestrictionRequest(authRestriction);
+var auth=new Authorization;
+auth.getAuthorizationRestriction(updateAuth);
+console.log("Result "+auth.getAuthorizationRestriction(updateAuth));
+/////////////////////////test getAuth end//////////////////////////////////
 
 var a=new Authorization;
 a.test();
-
+};
 
 //END DUMMY FUNCTIONS
