@@ -418,21 +418,12 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 
             if(isauthorizedRequest != null)
             {
-		var mongoose;
 		var AuthorizationRestrictionsMethodName;
 		var authSchema;
 		var auth;
 		var role;
 		AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
 
-
-		mongoose= require('mongoose');
-                var authSchema = new mongoose.Schema({
-                    methodName: String,
-                    moduleID: String,
-                    roleName: String,
-                    StatusPoints: Number
-                }, {collection: 'Authorization'});
 
 		/*
 		 * Create a new buzzSpace object, ProfileRequest object, roleRequest object and get
@@ -457,7 +448,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 			auth.findOne({"methodName": (AuthorizationRestrictionsMethodName) ,"moduleID": (module) ,"roleName": (role) },function (err, doc){
 				if (err)
 				{
-				    throw err("Entry not found");
+				    throw new Error("Entry not found");
 				}
 				else
 				{
