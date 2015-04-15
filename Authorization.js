@@ -280,6 +280,10 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 };
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%----GetAuthorizationRestrictions----%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+/**getAuthorizationRestriction gets the Restrictions from the Database
+/*
+ * @param getAuthorizationRequest -an GetAuthorizationRestrictionRequest object
+ */
 Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationRequest)
 {
 	var check;
@@ -312,6 +316,11 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
 }
 
 //--GetAuthorizationRestrictionsResult and its helper functions--//
+/**GetAuthorizationRestrictionsResult class
+ *
+ * @param AuthorizationRestriction - an AuthorizationRestriction object
+ * @constructor
+ */
 var GetAuthorizationRestrictionsResult=function(AuthorizationRestriction)
 {
     var  AuthorizationRestriction;
@@ -319,6 +328,11 @@ var GetAuthorizationRestrictionsResult=function(AuthorizationRestriction)
 };
 
 //--GetAuthorizationRestrictionRequest and its helper functions--//
+/**UpdateAuthorizationRestrictionRequest class that is passed through to updateAuthorizationRestriction
+ *
+ * @param AuthorizationRestriction - An AuthorizationRestriction object
+ * @constructor
+ */
 GetAuthorizationRestrictionRequest=function(AuthorizationRestriction)
 {
     var AuthorizationRestriction;
