@@ -2,7 +2,14 @@
 var connect = require('./connect.js');//to connect to the database
 var Authorization;
 var mongoose;
-
+mongoose= require('mongoose');
+//createing the schema
+var authSchema = new mongoose.Schema({
+    methodName: String,
+    moduleID: String,
+    roleName: String,
+    StatusPoints: Number
+}, {collection: 'Authorization'});
 Authorization = function () {
 
 };
@@ -12,14 +19,6 @@ Authorization = function () {
  */
 Authorization.prototype.updateAuthorizationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
-    mongoose= require('mongoose');
-    //createing the schema
-    var authSchema = new mongoose.Schema({
-        methodName: String,
-        moduleID: String,
-        roleName: String,
-        StatusPoints: Number
-    }, {collection: 'Authorization'});
     var auth;
     // checks if it is the first time accesing the database
     if(mongoose.models.Authorization) {
@@ -85,39 +84,6 @@ UpdateAuthorizationRestrictionsResult.prototype,getAuthorizationRestriction=func
 {
     return this.AuthorizationRestriction;
 };
-///////////////////////////////Update Authorisation restriction request class and functions///////////////////////////////////////////////////
-var UpdateAuthorizationRestrictionRequest;
-UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
-{
-    var userID;
-    this.userID = userID;
-    var AuthorizationRestriction;
-    this.AuthorizationRestriction=AuthorizationRestriction;
-};
-UpdateAuthorizationRestrictionRequest.prototype.getUserID=function()
-{
-    return this.userID;
-};
-UpdateAuthorizationRestrictionRequest.prototype.setUserID=function(userID)
-{
-    this.userID=userID;
-};
-UpdateAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(AuthorizationRestriction)
-{
-    this.AuthorizationRestriction=AuthorizationRestriction;
-};
-UpdateAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
-{
-    return this.AuthorizationRestriction;
-};
-//////////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////////
-///////////////////////////////Update Authorisation restriction result class and functions///////////////////////////////////////////////////
-var UpdateAuthorizationRestrictionsResult=function()
-{
-    var  AuthorizationRestriction;
-};
-///////////////////////////////End of Update Authorisation restriction request class and functions///////////////////////////////////////////////////
-
 
 
 
@@ -610,10 +576,11 @@ Authorization.prototype.test=function()
 
     ////////////////////////////test Update////////////////////////////////////
    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-    var serviceRestriction=new ServiceRestriction(2,sIdentifier);
+    var serviceRestriction=new ServiceRestriction(5,sIdentifier);
     var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
     var updateAuth=new UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);
     var auth=new Authorization;
+    auth.updateAuthorizationRestriction(updateAuth);
 /////////////////////////test Update end//////////////////////////////////
 
 //////////////////////////test isAuthorized////////////////////////////////
