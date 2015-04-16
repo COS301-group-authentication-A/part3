@@ -399,9 +399,9 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
                 return null;
             }
             else
-            {	console.log("Restrictions found and being returned");
+            {	console.log("Restrictions found");
                 var result = new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());//take note of this getAutho...
-                console.log("Returning "+result);
+                console.log(result);
                 return result;
             }
         });
@@ -662,25 +662,13 @@ Authorization.prototype.test=function()
     auth.updateAuthorizationRestriction(updateAuth);
 /////////////////////////test Update end//////////////////////////////////
 
-    console.log("\nTesting isAuthorized");
+    /*console.log("\nTesting isAuthorized");
 //////////////////////////test isAuthorized///////////////////////////////
     var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
     var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
     var auth0=new Authorization;
-    var res=auth0.isAuthorized(isAuthorizedReq);
-//////////////////////////test isAuthorized end//////////////////////////////// 
-
-    console.log("\nTesting Get");
-////////////////////////////test getAuth////////////////////////////////////
-var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-var serviceRestriction=new ServiceRestriction(5,sIdentifier);
-var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
-var updateAuth=new GetAuthorizationRestrictionRequest(authRestriction);
-var auth=new Authorization;
-auth.getAuthorizationRestriction(updateAuth);
-console.log("Result "+auth.getAuthorizationRestriction(updateAuth));
-
-/////////////////////////test getAuth end//////////////////////////////////
+    var res=auth0.isAuthorized(isAuthorizedReq);*/
+//////////////////////////test isAuthorized end////////////////////////////////
 
     console.log("\nTesting Remove");
 /////////////////////////test removeAuth /////////////////////////////////////////////////////
@@ -692,6 +680,18 @@ console.log("Result "+auth.getAuthorizationRestriction(updateAuth));
     auth.removeAuthorizationRestriction(removeAuth);
     console.log("\n");
 /////////////////////////////test remmoveAuth end////////////////////////////////////////////////////////////
+
+    console.log("\nTesting Get");
+////////////////////////////test getAuth////////////////////////////////////
+    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+    var serviceRestriction=new ServiceRestriction(5,sIdentifier);
+    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+    var updateAuth=new GetAuthorizationRestrictionRequest(authRestriction);
+    var auth=new Authorization;
+    auth.getAuthorizationRestriction(updateAuth);
+    console.log(auth.getAuthorizationRestriction(updateAuth));
+
+/////////////////////////test getAuth end//////////////////////////////////
 };
 
 console.log("Hello");
