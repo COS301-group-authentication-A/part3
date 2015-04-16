@@ -362,38 +362,50 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%----GetAuthorizationRestrictions----%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /**getAuthorizationRestriction gets the Restrictions from the Database
-/*
+ /*
  * @param getAuthorizationRequest -an GetAuthorizationRestrictionRequest object
  */
 Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationRequest)
 {
-	var check;
-	
-	if(mongoose.models.Authorization) 
-	{
-		check = mongoose.model('Authorization');
-	}
-	else 
-	{
-		check = mongoose.model('Authorization', authSchema);
-	}
-	
-	check.find(
-	{
-		'methodName': getAuthorizationRequest.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionServiceIdentifier().getServiceIdentifierMethodName()
-	},
-	function (err) 
-	{
-		if (err) 
-		{
-			console.log("Restriction not found");
-			return null;
-		} 
-		else 
-		{	console.log("Restriction found and being returned");
-			return new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());//take note of this getAutho...
-		}
-	});
+    var check;
+
+    if(mongoose.models.Authorization)
+    {
+        check = mongoose.model('Authorization');
+    }
+    else
+    {
+        check = mongoose.model('Authorization', authSchema);
+    }
+    //check if space is active
+    var buzzSpace = buzzSpaces();
+
+    /*if(buzzSpace.getModuleID() != getAuthorizationRequest.getAuthorizationRestriction().getModuleID())
+     {
+     console.log("buzzSpace does not exist");
+     return null;
+     }
+     else
+     {*/
+    check.find(
+        {
+            'moduleID': getAuthorizationRequest.getAuthorizationRestriction().getModuleID()
+        },
+        function (err)
+        {
+            if (err)
+            {
+                console.log("Restrictions not found");
+                return null;
+            }
+            else
+            {	console.log("Restrictions found and being returned");
+                var result = new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());//take note of this getAutho...
+                console.log("Returning "+result);
+                return result;
+            }
+        });
+    //}
 }
 
 //--GetAuthorizationRestrictionsResult and its helper functions--//
@@ -424,6 +436,7 @@ GetAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=functio
     return this.AuthorizationRestriction;
 };
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+
 
 
 //#START isAuthorized
