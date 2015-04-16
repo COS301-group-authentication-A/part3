@@ -367,6 +367,11 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
  */
 Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationRequest)
 {
+    //check if space is active
+    var buzzSpace = buzzSpaces();
+    //holds final object for GUI
+    var resultObject;
+    //for schema
     var check;
 
     if(mongoose.models.Authorization)
@@ -377,8 +382,6 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
     {
         check = mongoose.model('Authorization', authSchema);
     }
-    //check if space is active
-    var buzzSpace = buzzSpaces();
 
     /*if(buzzSpace.getModuleID() != getAuthorizationRequest.getAuthorizationRestriction().getModuleID())
      {
@@ -388,23 +391,19 @@ Authorization.prototype.getAuthorizationRestriction = function(getAuthorizationR
      else
      {*/
     check.find(
-        {
-            'moduleID': getAuthorizationRequest.getAuthorizationRestriction().getModuleID()
-        },
-        function (err)
-        {
-            if (err)
-            {
-                console.log("Restrictions not found");
-                return null;
-            }
-            else
-            {	console.log("Restrictions found");
-                var result = new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());//take note of this getAutho...
-                console.log(result);
-                return result;
-            }
-        });
+    {
+        'moduleID': getAuthorizationRequest.getAuthorizationRestriction().getModuleID()
+    }).stream().on('data', function(doc)
+    {
+        console.log("MethodName : "+doc.methodName+"\n RoleName : "+doc.roleName+"\n StatusPoints : "+doc.StatusPoints);
+        console.log("\n");
+        resultObject = doc;
+    }).on('error', function(err)
+    {
+        console.log("Restrictions could not be returned");
+    });
+
+    return new GetAuthorizationRestrictionsResult(getAuthorizationRequest.getAuthorizationRestriction());
     //}
 }
 
@@ -436,7 +435,6 @@ GetAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=functio
     return this.AuthorizationRestriction;
 };
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-
 
 
 //#START isAuthorized
