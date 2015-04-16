@@ -94,28 +94,37 @@ UpdateAuthorizationRestrictionsResult.prototype,getAuthorizationRestriction=func
 
 
 ///////////////////////////////RemoveAuthorisationRestrictionResult class and functions///////////////////////////////////////////////////
+/**RemoveAuthorizationRestrictionsResult class
+ * @param AuthorizationRestriction - an AuthorizationRestriction object
+ * @constructor
+ */
 var RemoveAuthorizationRestrictionsResult=function()
 {
     var  AuthorizationRestriction;
 };
+/**Returns the stored AuthorizationRestriction object*/
+RemoveAuthorizationRestrictionsResult.prototype,getAuthorizationRestriction=function()
+{
+    return this.AuthorizationRestriction;
+};
 ///////////////////////////////End of RemoveAuthorisationRestrictionResult///////////////////////////////////////////////////
 
 
+/**updateAuthorizationRestriction that updates the Restriction in the Database
+ * @param RemoveAuthorizationReq is a RemoveAuthorizationRestrictionRequest Object
+ */
 Authorization.prototype.removeAuthorizationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
 {
-    //console.log("Here 1");
-    RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServicerestrictionMinimumStatusPoints(2);
-    //RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+    //Setting Minimum status points to zero || logically removing the restriction
+    RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServicerestrictionMinimumStatusPoints(0);
+    //test
     var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
-    // console.log("Here 2");
-    //console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
+
+    //call update with the updated points to change it in the database
     b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
-    //var uRestriction = new Authorization();
     res = this.updateAuthorizationRestriction(b);
-    //  console.log("Here 3");
-    //return new RemoveAuthorizationRestrictionsResult();
-    // the spec says that there is no need to return anything for remove
-    //throw err("Not Authorized exception");
+
+    //Return an error if an error was what is returned by update else nothing
     if(typeof(res) == Error.toString()){
         console.log("Returning error");
         return res;
@@ -129,7 +138,11 @@ Authorization.prototype.removeAuthorizationRestriction=function(RemoveAuthorizat
 //////////////////////End of RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 
 //////////////////////////////RemoveAuthorisationRestrictionRequest class and functions//////////////////////////////////////////
-
+/**RemoveAuthorizationRestrictionRequest is used to call removeAuthorizationRestriction
+ * @param userID - A string containing the userID of that person
+ * @param _AuthorizationRestriction - An AuthorizationRestriction object
+ * @constructor
+ */
 var RemoveAuthorizationRestrictionRequest;
 RemoveAuthorizationRestrictionRequest=function(userID,_AuthorizationRestriction)
 {
@@ -138,18 +151,31 @@ RemoveAuthorizationRestrictionRequest=function(userID,_AuthorizationRestriction)
     var AuthorizationRestriction;
     this.AuthorizationRestriction=_AuthorizationRestriction;
 };
+/**
+* returns the stored userID
+*/
 RemoveAuthorizationRestrictionRequest.prototype.getUserID=function()
 {
     return this.userID;
 };
+/**
+* @param _userID string containing the new userID
+* sets the stored userID to the one passed through as a parameter
+*/
 RemoveAuthorizationRestrictionRequest.prototype.setUserID=function(_userID)
 {
     this.userID=_userID;
 };
+/**
+* @param _AuthorizationRestriction - an object containing the new AuthorizationRestriction
+*/
 RemoveAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(_AuthorizationRestriction)
 {
     this.AuthorizationRestriction=_AuthorizationRestriction;
 };
+/**
+* Returns the stored AuthorizationRestriction object
+*/
 RemoveAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
 {
     return this.AuthorizationRestriction;
