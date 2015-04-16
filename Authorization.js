@@ -100,27 +100,32 @@ var RemoveAuthorizationRestrictionsResult=function()
 };
 ///////////////////////////////End of RemoveAuthorisationRestrictionResult///////////////////////////////////////////////////
 
-Authorization.prototype.removeAuthorisationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
-{
-	try	{
-        	RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
-        	var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
-        	//console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
-        	b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
 
-	        //var uRestriction = new Authorization();
-	        this.updateAuthorisationRestriction(b);
-	    //return new RemoveAuthorizationRestrictionsResult();
-	   // the spec says that there is no need to return anything for remove
-	}catch(err){
-		//throw err("Not Authorized exception");
-	}
+Authorization.prototype.removeAuthorizationRestriction=function(RemoveAuthorizationReq)//The  removeAuthorisationRestriction function
+{
+    //console.log("Here 1");
+    RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServicerestrictionMinimumStatusPoints(2);
+    //RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().setServiceRestrictionStatusPoints(0);
+    var s = RemoveAuthorizationReq.getAuthorizationRestriction().getServiceRestriction().getServiceRestrictionMinimumStatusPoints();
+    // console.log("Here 2");
+    //console.log(RemoveAuthorizationReq.getUserID() +" ... " + s);
+    b = new UpdateAuthorizationRestrictionRequest(RemoveAuthorizationReq.getUserID(),RemoveAuthorizationReq.getAuthorizationRestriction());
+    //var uRestriction = new Authorization();
+    res = this.updateAuthorizationRestriction(b);
+    //  console.log("Here 3");
+    //return new RemoveAuthorizationRestrictionsResult();
+    // the spec says that there is no need to return anything for remove
+    //throw err("Not Authorized exception");
+    if(typeof(res) == Error.toString()){
+        console.log("Returning error");
+        return res;
+    }else{
+        console.log("Authorization restriction removed");
+    }
+    //else if(){
+    //}
 };
-///////////////////////////////RemoveAuthorisationRestrictionResult class and functions//////////////////////////
-var RemoveAuthorizationRestrictionsResult;
-RemoveAuthorizationRestrictionsResult = function () {
-    var AuthorizationRestriction;
-};
+
 //////////////////////End of RemoveAuthorisationRestrictionResult class and functions//////////////////////////
 
 //////////////////////////////RemoveAuthorisationRestrictionRequest class and functions//////////////////////////////////////////
@@ -253,6 +258,12 @@ var ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by 
 ServiceRestriction.prototype.getServiceRestrictionMinimumStatusPoints=function() {
     return this.minimumStatusPoints;
 };
+
+
+ServiceRestriction.prototype.setServicerestrictionMinimumStatusPoints=function(_minStatPoints){
+  this.minimumStatusPoints= _minStatPoints;
+};
+
 /**Returns the internal ServiceIdentifier object*/
 ServiceRestriction.prototype.getServiceRestrictionServiceIdentifier=function() {
     return this.ServiceIdentifier;
@@ -560,7 +571,7 @@ Status.prototype.getStatusForProfile=function(UID)
 ///////////////unit testing///////////////////////////
 Authorization.prototype.test=function()
 {
-
+    console.log("\nTesting Update");
     ////////////////////////////test Update////////////////////////////////////
    var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
     var serviceRestriction=new ServiceRestriction(3,sIdentifier);
@@ -570,13 +581,15 @@ Authorization.prototype.test=function()
     auth.updateAuthorizationRestriction(updateAuth);
 /////////////////////////test Update end//////////////////////////////////
 
-//////////////////////////test isAuthorized////////////////////////////////
+    console.log("\nTesting isAuthorized");
+//////////////////////////test isAuthorized///////////////////////////////
     var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
     var isAuthorizedReq= new isAuthorizedRequest("u12118282",sIdentifier);
     var auth0=new Authorization;
     var res=auth0.isAuthorized(isAuthorizedReq);
-//////////////////////////test isAuthorized end////////////////////////////////	
-	
+//////////////////////////test isAuthorized end//////////////////////////////// 
+
+    console.log("\nTesting Get");
 ////////////////////////////test getAuth////////////////////////////////////
 var sIdentifier=new ServiceIdentifier("Authorization","updateAuthorizationRestriction");
 var serviceRestriction=new ServiceRestriction(5,sIdentifier);
@@ -585,10 +598,22 @@ var updateAuth=new GetAuthorizationRestrictionRequest(authRestriction);
 var auth=new Authorization;
 auth.getAuthorizationRestriction(updateAuth);
 console.log("Result "+auth.getAuthorizationRestriction(updateAuth));
+
 /////////////////////////test getAuth end//////////////////////////////////
 
-var a=new Authorization;
-a.test();
+    console.log("\nTesting Remove");
+/////////////////////////test removeAuth /////////////////////////////////////////////////////
+    var sIdentifier=new ServiceIdentifier("Authorization","removeAuthorizationRestriction");
+    var serviceRestriction=new ServiceRestriction(0,sIdentifier);
+    var authRestriction=new AuthorizationRestriction(serviceRestriction,"COS 301","lecturer");
+    var removeAuth=new RemoveAuthorizationRestrictionRequest("u12230830",authRestriction);
+    var auth=new Authorization;
+    auth.removeAuthorizationRestriction(removeAuth);
+    console.log("\n");
+/////////////////////////////test remmoveAuth end////////////////////////////////////////////////////////////
 };
 
+console.log("Hello");
+var a=new Authorization;
+a.test();
 //END DUMMY FUNCTIONS
