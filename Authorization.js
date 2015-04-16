@@ -184,20 +184,22 @@ AddAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=functio
 //////////////////////////////AddAuthorisationRestriction class and functions///////////////////////////////////////////
 Authorization.prototype.addAuthorisationRestriction=function(AddAuthorizationReq)
 {
-    try
-    {
-        req = new UpdateAuthorizationRestrictionRequest(AddAuthorizationReq.getUserID(), AddAuthorizationReq.getAuthorizationRestriction());
-        this.updateAuthorisationRestriction(req);
+    //req1 = new isAuthorizedRequest(AddAuthorizationReq.getUserID(),GET SERVICE IDENTIFIER)
+    //if (this.isAuthorized(req1).getIsAuthorized == true)
+    //{
+        req2 = new UpdateAuthorizationRestrictionRequest(AddAuthorizationReq.getUserID(), AddAuthorizationReq.getAuthorizationRestriction());
+        this.updateAuthorisationRestriction(req2);
         return new AddAuthorizationRestrictionsResult();
-    }
-    catch (err)
-    {
-        throw err("Not Authorized exception");
-    }
+    //}
+    //else
+    //{
+    //  throw new Error("Not Authorized Exception");
+    //}
+
 };
 ///////////////////////////////End of AddAuthorisationRestriction class and functions///////////////////////////////////
 ///////////////////////////////AddAuthorisationRestrictionResult class and functions////////////////////////////////////
-var UpdateAuthorizationRestrictionsResult=function()
+var AddAuthorizationRestrictionsResult=function()
 {
     var  AuthorizationRestriction;
 };
