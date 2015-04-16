@@ -183,9 +183,13 @@ RemoveAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=func
 
 ///////////////////////////////End of RemoveAuthorisationRestriction request class and functions///////////////////////////////////////////////
 
-//////////////////////////////AddAuthorizationRestrictionRequest class and functions////////////////////////////////////
-
 var AddAuthorizationRestrictionRequest;
+/**
+ * populates the necessary variables required to add a new restriction
+ * @param _userID
+ * @param _AuthorizationRestriction
+ * @constructor
+ */
 AddAuthorizationRestrictionRequest = function(_userID, _AuthorizationRestriction)
 {
     var AuthorizationRestriction;
@@ -194,47 +198,85 @@ AddAuthorizationRestrictionRequest = function(_userID, _AuthorizationRestriction
     this.userID = _userID;
 };
 
+/**
+ * gets the global userID variable
+ * @returns {*|AddAuthorizationRestrictionRequest.userID}
+ */
 AddAuthorizationRestrictionRequest.prototype.getUserID=function()
 {
     return this.userID;
 };
+
+/**
+ * sets the global userID variable
+ * @param _userID
+ */
 AddAuthorizationRestrictionRequest.prototype.setUserID=function(_userID)
 {
     this.userID=_userID;
 };
 
+/**
+ * sets the global AuthorizationRestriction variable with new AuthorizationRestriction
+ * @param _AuthorizationRestriction
+ */
 AddAuthorizationRestrictionRequest.prototype.setAuthorizationRestriction=function(_AuthorizationRestriction)
 {
     this.AuthorizationRestriction=_AuthorizationRestriction;
 };
+
+/**
+ * sets the global AuthorizationRestriction variable
+ * @returns {*|AddAuthorizationRestrictionRequest.AuthorizationRestriction}
+ */
 AddAuthorizationRestrictionRequest.prototype.getAuthorizationRestriction=function()
 {
     return this.AuthorizationRestriction;
 };
-//////////////////////////////End of AddAuthorizationRestrictionRequest class and functions/////////////////////////////
-//////////////////////////////AddAuthorisationRestriction class and functions///////////////////////////////////////////
-Authorization.prototype.addAuthorisationRestriction=function(AddAuthorizationReq)
-{
-    //req1 = new isAuthorizedRequest(AddAuthorizationReq.getUserID(),GET SERVICE IDENTIFIER)
-    //if (this.isAuthorized(req1).getIsAuthorized == true)
-    //{
-        req2 = new UpdateAuthorizationRestrictionRequest(AddAuthorizationReq.getUserID(), AddAuthorizationReq.getAuthorizationRestriction());
-        this.updateAuthorisationRestriction(req2);
-        return new AddAuthorizationRestrictionsResult();
-    //}
-    //else
-    //{
-    //  throw new Error("Not Authorized Exception");
-    //}
 
+/**
+ * adds a new authorization restriction via the updateAuthorizationRestriction function and returns a result based on updateAuthorizationRestriction result
+ * @param AddAuthorizationReq
+ * @returns {*}
+ */
+Authorization.prototype.addAuthorizationRestriction=function(AddAuthorizationReq)
+{
+    req = new UpdateAuthorizationRestrictionRequest(AddAuthorizationReq.getUserID(), AddAuthorizationReq.getAuthorizationRestriction());
+    var res;
+    res = this.updateAuthorizationRestriction(req);
+    if (res == null)
+    {
+        console.log("Returning null");
+        return res;
+    }
+    else
+    if(typeof(res) == Error.toString())
+    {
+        console.log("Returning error");
+        return res;
+    }
+    else
+    {
+        console.log("Authorization restriction added");
+        return new AddAuthorizationRestrictionsResult(res.getUpdateAuthorizationRestriction());
+    }
 };
-///////////////////////////////End of AddAuthorisationRestriction class and functions///////////////////////////////////
-///////////////////////////////AddAuthorisationRestrictionResult class and functions////////////////////////////////////
-var AddAuthorizationRestrictionsResult=function()
+
+/**
+ * puts updateAuthorizationRestriction into a local variable within AddAuthorizationRestrictionResult
+ * @param AuthorizationRestriction
+ * @constructor
+ */
+var AddAuthorizationRestrictionsResult=function(AuthorizationRestriction)
 {
     var  AuthorizationRestriction;
+    this.AuthorizationRestriction = AuthorizationRestriction;
 };
-//////////////////////End of AddAuthorisationRestrictionResult class and functions//////////////////////////////////////
+
+AddAuthorizationRestrictionsResult.prototype.getAddAuthorizationRestrictions=function()
+{
+    return this.AuthorizationRestriction;
+}
 
 /**AuthorizationRestriction class
  *
