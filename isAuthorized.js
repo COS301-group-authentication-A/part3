@@ -1,12 +1,23 @@
+//THIS IS THE Authorization.js
 //var csds = require('./csds');
 // var test = require('unit.js');
-var worknow = new Object();
-worknow.atho = function()
+var exports  = new Object();
+exports.object = function()
 {
 var connect = require('../Database/connect.js');
 //var csds = require('./csds');
 var Authorization;
 var mongoose;
+
+var authorTest = {};
+var bank = {};
+
+
+Authorization = function () {
+  
+
+};
+
 mongoose= require('mongoose');
 //createing the schema
 var authSchema = new mongoose.Schema({
@@ -15,15 +26,11 @@ var authSchema = new mongoose.Schema({
     roleName: String,
     StatusPoints: Number
 }, {collection: 'Authorization'});
-Authorization = function () {
-  
-
-};
 
 /**updateAuthorizationRestriction that updates the Restriction in the Database
  * @param UpdateAuthReq -an UpdateAuthorizationRestrictionRequest object
  */
-Authorization.prototype.updateAuthorizationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
+var updateAuthorizationRestriction=function(UpdateAuthReq)//The  updateAuthorisationRestriction function
 {
     var buzzSpace=new buzzSpaces();
     if(!buzzSpace.isAdministrator(UpdateAuthReq.getUserID()))
@@ -72,7 +79,7 @@ UpdateAuthorizationRestrictionRequest=function(userID,AuthorizationRestriction)
     var AuthorizationRestriction;
     this.AuthorizationRestriction=AuthorizationRestriction;
   }
-  else return new UpdateAuthorizationRestrictionRequest;
+  else return new UpdateAuthorizationRestrictionRequest(userID,AuthorizationRestriction);
     
 };
 /**Gets the userID from the internal veriable*/
@@ -280,7 +287,7 @@ AuthorizationRestriction.prototype.getRoleName=function()
  * @param serviceIdentifier - A serviceIdentifier object
  * @constructor
  */
-var ServiceRestriction = new Object();
+var ServiceRestriction;
 ServiceRestriction=function(minimumStatusPoints,serviceIdentifier)//used by everyone
 {
 	if(this instanceof ServiceRestriction)
@@ -308,9 +315,6 @@ ServiceRestriction.prototype.getServiceRestrictionServiceIdentifier=function() {
  */
 var ServiceIdentifier=function(fullyQualifiedInterfaceName,methodName)//used by everyone
 {
-	"use strict"
-        console.log('in ServiceIdentifier ' + methodName);
-  
 	if(this instanceof ServiceIdentifier)
         {
 	  var fullyQualifiedInterfaceName;
@@ -330,6 +334,13 @@ ServiceIdentifier.prototype.getServiceIdentifierInterfaceName=function()
 {
     return this.fullyQualifiedInterfaceName;
 };
+
+bank.greetings = function()
+{
+  console.log("Hello world!!!");
+}
+
+
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%----GetAuthorizationRestrictions----%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /**getAuthorizationRestriction gets the Restrictions from the Database
@@ -464,7 +475,7 @@ isAuthorizedResult.prototype.getIsAuthorized=function()
  * @param isauthorizedRequest: isAuthorizedRequest object
  */
 
-Authorization.prototype.isAuthorized = function(isauthorizedRequest)
+var isAuthorized = function(isauthorizedRequest)
 {
 	    var boolisAuthorized;
 
@@ -476,7 +487,7 @@ Authorization.prototype.isAuthorized = function(isauthorizedRequest)
 		var authSchema;
 		var auth;
 		var role;
-		AuthorizationRestrictionsMethodName = (isauthorizedRequest.getisAuthorizedRequestServiceIdentifier()).getServiceIdentifierMethodName();
+		AuthorizationRestrictionsMethodName = isauthorizedRequest.getisAuthorizedRequestServiceIdentifier().getServiceIdentifierMethodName();
 
 
 		/*
@@ -650,33 +661,103 @@ Status.prototype.getStatusForProfile=function(UID)
     return 2;
 };
 
-//   return {ServiceIdentifier: ServiceIdentifier,Authorization: Authorization, ServiceRestriction: ServiceRestriction, AuthorizationRestriction: AuthorizationRestriction, UpdateAuthorizationRestrictionRequest: UpdateAuthorizationRestrictionRequest, isAuthorizedRequest: isAuthorizedRequest, RemoveAuthorizationRestrictionRequest: RemoveAuthorizationRestrictionRequest};
+  return {GetAuthorizationRestrictionRequest: GetAuthorizationRestrictionRequest,  bank:bank, isAuthorized: isAuthorized,Authorization: Authorization, ServiceIdentifier: ServiceIdentifier, ServiceRestriction: ServiceRestriction, AuthorizationRestriction: AuthorizationRestriction, UpdateAuthorizationRestrictionRequest: UpdateAuthorizationRestrictionRequest, isAuthorizedRequest: isAuthorizedRequest, RemoveAuthorizationRestrictionRequest: RemoveAuthorizationRestrictionRequest, updateAuthorizationRestriction:updateAuthorizationRestriction};
 }
 
-module.exports = worknow;
+
+module.exports = exports;
 // module.exports = Authorization;
 // module.exports = ServiceIdentifier;
 // module.exports['@singleton'] = true;
 
 
-//THIS CODE WOULD BE IN ANOTHER FILE e.g examples.js
+//THIS IS THE example.js file
 var test = require('unit.js');
-//var Authorization = require('./Authorization.js');
+var obj = require('./Authorization');
 
 
+describe('test cases',function()
+{
+  it('testing isAuthorized', function(done)
+  {
+	var sIdentifier = new obj.object().ServiceIdentifier("Authorization", "closeThread");
+	var checkAuth = new obj.object().isAuthorizedRequest("u12118282", sIdentifier);
+// 	console.log("Lets look: " +checkAuth.getUserID());
+// 	var t = new obj.object().isAuthorized(checkAuth);	
+	
+    done();
+  });
+  
+  it('testing updateAuthorizationRestriction', function(done)
+  {
+	  var sIdentifier=new obj.object().ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+	  var serviceRestriction=new obj.object().ServiceRestriction(3,sIdentifier);
+	  var authRestriction=new obj.object().AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+	  var updateAuth=new obj.object().UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);	  
 
-    describe('test cases',function()
-    {
-      it('testing isAuthorized', function(done)
-      {
-	var obj = require('./Authorization');
-	var sIdentifier=obj.ServiceIdentifier("Authorization","updateAuthorizationRestriction");
-	var isAuthorizedReq = obj.isAuthorizedRequest("u12118282",sIdentifier);
-// 	var auth0 = new Authorization;
-	var res = obj.isAuthorized(isAuthorizedReq);
+	  test.must(sIdentifier.getServiceIdentifierMethodName()).be.a.string();
+	  test.must(sIdentifier.getServiceIdentifierInterfaceName()).be.a.string();
+	  test.must(authRestriction.getRoleName()).be.a.string();
+	  test.must(authRestriction.getModuleID()).be.a.string();
+	  
+	  test.value(sIdentifier.getServiceIdentifierMethodName()).isEqualTo("updateAuthorizationRestriction");
+	  test.value(sIdentifier.getServiceIdentifierInterfaceName()).isEqualTo("Authorization");
 
-	done();
-      });
-    });  
+	  test.value(authRestriction.getRoleName()).isEqualTo("Student");
+	  test.value(authRestriction.getModuleID()).isEqualTo("COS 301");
 
+	  test.value(updateAuth.getUserID()).isEqualTo("u12118282");
+	  
+    done();
+  });
 
+  it('testing getAuthorizationRestriction', function(done)
+  {
+	  var sIdentifier=new obj.object().ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+	  var serviceRestriction=new obj.object().ServiceRestriction(3,sIdentifier);
+	  var authRestriction=new obj.object().AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+	  var updateAuth=new obj.object().UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);	
+	  
+	  var updateAuth=new obj.object().GetAuthorizationRestrictionRequest(authRestriction);
+
+	  test.must(sIdentifier.getServiceIdentifierMethodName()).be.a.string();
+	  test.must(sIdentifier.getServiceIdentifierInterfaceName()).be.a.string();
+	  test.must(authRestriction.getRoleName()).be.a.string();
+	  test.must(authRestriction.getModuleID()).be.a.string();
+	  
+	  test.value(sIdentifier.getServiceIdentifierMethodName()).isEqualTo("updateAuthorizationRestriction");
+	  test.value(sIdentifier.getServiceIdentifierInterfaceName()).isEqualTo("Authorization");
+
+	  test.value(authRestriction.getRoleName()).isEqualTo("Student");
+	  test.value(authRestriction.getModuleID()).isEqualTo("COS 301");
+	  
+    done();
+  });
+
+  
+  it('testing getAuthorizationRestriction', function(done)
+  {
+	  var sIdentifier=new obj.object().ServiceIdentifier("Authorization","updateAuthorizationRestriction");
+	  var serviceRestriction=new obj.object().ServiceRestriction(3,sIdentifier);
+	  var authRestriction=new obj.object().AuthorizationRestriction(serviceRestriction,"COS 301","Student");
+	  var updateAuth=new obj.object().UpdateAuthorizationRestrictionRequest("u12118282",authRestriction);	
+	  
+	  var updateAuth=new obj.object().GetAuthorizationRestrictionRequest(authRestriction);
+
+	  test.must(sIdentifier.getServiceIdentifierMethodName()).be.a.string();
+	  test.must(sIdentifier.getServiceIdentifierInterfaceName()).be.a.string();
+	  test.must(authRestriction.getRoleName()).be.a.string();
+	  test.must(authRestriction.getModuleID()).be.a.string();
+	  
+	  test.value(sIdentifier.getServiceIdentifierMethodName()).isEqualTo("updateAuthorizationRestriction");
+	  test.value(sIdentifier.getServiceIdentifierInterfaceName()).isEqualTo("Authorization");
+
+	  test.value(authRestriction.getRoleName()).isEqualTo("Student");
+	  test.value(authRestriction.getModuleID()).isEqualTo("COS 301");
+	  
+    done();
+  });
+
+  
+  
+});  
